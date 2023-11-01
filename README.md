@@ -1,6 +1,21 @@
 # CineCult
 
+Basic setup:
 
+Client: 
+Run: npm i 
+Run: npm start 
+
+Server: 
+Create virtual environment: python -m venv venv   
+Install some stuff: pip install requirements.txt (I'm not sure if thats actually correct) 
+Create .env file: that looks like this:  (add this to your gitignore might alread be in there lokey)
+    DB_HOST=localhost
+    DB_USER=username
+    DB_PASSWORD=password
+    DB_DATABASE=yourdatabase
+
+Run: flask run 
 
 ## Getting started
 
