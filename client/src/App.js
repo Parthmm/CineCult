@@ -4,8 +4,17 @@ import './App.css';
 function App() {
 
   const getMovies = () => {
-    // Make an API call to your Flask server using fetch
-    fetch('http://localhost:3000/get_movies')
+    fetch("config.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch config.json');
+        }
+        return response.json();
+      })
+      .then(config => {
+        const PORT = config.PORT;
+        return fetch("http://localhost:" + PORT + "/get_movies");
+      })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -13,20 +22,18 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        // Handle the API response here
         console.log('API Response:', data);
       })
       .catch((error) => {
-        // Handle API call errors here
         console.error('API Error:', error);
       });
-  };
+};
 
-  return (
-    <div className="App">
-      <button onClick={getMovies}></button>
-    </div>
-  );
+return (
+  <div className="App">
+    <button onClick={getMovies}>Get Movies</button>
+  </div>
+);
 }
 
 export default App;
