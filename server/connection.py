@@ -34,7 +34,9 @@ def get_movies():
     movies = cursor.fetchall()
     cursor.close()
     conn.close()
-    return jsonify(movies)
+    response = jsonify(movies)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.route('/add', methods=['POST'])
 def add():
