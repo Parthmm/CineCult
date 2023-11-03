@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 function MoviePage() {  // Assuming movieId is passed as a prop to this component
     const [review, setReview] = useState('');
+    const [reviews, setReviews] = useState([])
 
     const location = useLocation();
 
@@ -40,8 +41,33 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
             });
     }
 
+    useEffect(() => {
+        fetch(`/reviews/${location.state.key}`)  // Use the port from config
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network broken yeet")
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setReviews(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching movies:', error);
+            });
+
+    }, []);
+
+
     return (
         <div>
+            <div>
+                Reviews:
+                {reviews.map((review) => {
+                    return <div> <p>{review.review}</p> </div>
+                })}
+            </div>
             <h2>Write a Review</h2>
             <textarea
                 value={review}

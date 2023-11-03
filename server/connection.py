@@ -86,10 +86,11 @@ def add():
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM movie_review")
+    cursor.execute("SELECT review FROM movie_reviews WHERE movie_id = (%s) ", (movie_id,))
     movies = cursor.fetchall()
     cursor.close()
-    conn.close()
+    conn.close()  
+    print(movies)
     response = jsonify(movies)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
