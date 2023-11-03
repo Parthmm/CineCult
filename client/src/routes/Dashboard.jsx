@@ -30,10 +30,8 @@ function Dashboard() {
     return (
         <div>
             {dashboardInfo.map((movie) => {
-                return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} />
+                return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
             })}
-            <MovieCard />
-            <TVShowCard />
         </div >
     )
 }

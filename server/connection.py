@@ -80,7 +80,19 @@ def add():
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect(url_for('index'))
+    return redirect(url_for('index')) 
+
+@app.route('/reviews/<movie_id>', methods=['GET']) 
+def get_review(movie_id): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM movie_review")
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    response = jsonify(movies)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.route('/reviews/<movie_id>', methods=['POST'])
 def add_review(movie_id):
