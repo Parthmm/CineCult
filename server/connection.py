@@ -26,6 +26,39 @@ except mysql.connector.Error as e:
 def index():
     return render_template('index.html') 
 
+
+@app.route('/get_dashboard_info', methods=['GET'])
+def get_dashboard_info():
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""SELECT
+                    m.name AS movie_name, 
+                    m.avg_rating as movie_rating, 
+                    m.movie_id as movie_id,
+                    g.Name AS genre,
+                    a.Name AS actor_name,
+                    d.Name AS director_name,
+                    l.Name AS language
+                FROM
+                    has AS h
+                JOIN
+                    movie AS m ON h.movie_id = m.movie_id
+                JOIN
+                    genre AS g ON h.genre_id = g.genre_id
+                JOIN
+                    actor AS a ON h.actor_id = a.actor_id
+                JOIN
+                    director AS d ON h.director_id = d.director_id
+                JOIN
+                    language AS l ON h.language_id = l.language_id""")
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    response = jsonify(movies)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
 @app.route('/get_movies', methods=['GET'])
 def get_movies():
     conn = mysql.connector.connect(**config)
