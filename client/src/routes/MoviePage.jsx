@@ -8,6 +8,43 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
 
     const location = useLocation();
 
+
+    useEffect(() => {
+        fetch(`/reviews/${location.state.key}`)  // Use the port from config
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network broken yeet")
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setReviews(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching movies:', error);
+            });
+
+    }, []);
+
+    const fetchReviews = (movieId) => {
+        if (movieId) {
+            fetch(`/reviews/${movieId}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network broken yeet");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    setReviews(data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching reviews:', error);
+                });
+        }
+    }
+
     const handleReviewChange = (event) => {
         setReview(event.target.value);
     }
@@ -40,25 +77,28 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
                 console.error('Error:', error);
                 alert('Error saving review. Please try again later.');
             });
+
+        fetchReviews(location.state.key);
     }
 
-    useEffect(() => {
-        fetch(`/reviews/${location.state.key}`)  // Use the port from config
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network broken yeet")
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setReviews(data)
-            })
-            .catch((error) => {
-                console.error('Error fetching movies:', error);
+
+    const handleDeleteReview = () => {
+        fetch(`http://localhost:${config.PORT}/reviews/${location.state.key}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving review. Please try again later.');
             });
 
-    }, []);
+        fetchReviews(location.state.key);
+    }
+
+
 
 
     return (
@@ -79,6 +119,9 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
             />
             <br />
             <button onClick={handleSubmitReview}>Submit Review</button>
+
+
+            <button onClick={handleDeleteReview}>Delete all Reviews</button>
         </div>
     )
 }
