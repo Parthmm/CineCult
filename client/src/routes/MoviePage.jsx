@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import config from "../config.json";
 
 function MoviePage() {  // Assuming movieId is passed as a prop to this component
     const [review, setReview] = useState('');
@@ -18,7 +19,7 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
         }
 
         // Make an API call to the Flask server to save the review
-        fetch(`/reviews/${location.state.key}`, {
+        fetch(`http://localhost:${config.PORT}/reviews/${location.state.key}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
