@@ -3,25 +3,30 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./routes/Dashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
+import Login from "./routes/Login";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <><Navbar/><Dashboard/></>
+    element: <><Login /></>
+  },
+  {
+    path: "/dashboard",
+    element: <><Navbar /><Dashboard /></>
   },
   {
     path: "/movie",
-    element: <><Navbar/><MoviePage/></>
+    element: <><Navbar /><MoviePage /></>
   },
   {
     path: "/tv-show",
-    element: <><Navbar/><TVShowPage/></>
+    element: <><Navbar /><TVShowPage /></>
   }
 ]);
 
 function App() {
   return (
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   )
 }
 
