@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import TVShowCard from "../components/TVShowCard";
+import config from "../config.json";  // Import the config.json file
 
 function Dashboard() {
 
-    //state to hold movies and shit? 
+    //state to hold movies and tv shows
     const [dashboardInfo, setDashboardInfo] = useState([])
 
     //everytime we navigate to the webpage
     useEffect(() => {
-        fetch("http://localhost:3000/get_dashboard_info")
+        fetch(`http://localhost:${config.PORT}/get_dashboard_info`)  // Use the port from config
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network broken yeet")
@@ -24,20 +25,13 @@ function Dashboard() {
                 console.error('Error fetching movies:', error);
             });
 
-
-
-
-
     }, []);
 
     return (
         <div>
             {dashboardInfo.map((movie) => {
-                return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} />
+                return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
             })}
-            <MovieCard />
-
-            <TVShowCard />
         </div >
     )
 }
