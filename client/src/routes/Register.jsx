@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom';
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
-function Login() {  // Assuming movieId is passed as a prop to this component
+function Register() {
     const navigate = useNavigate();
 
     return (
         <div>
             <div className={"titleContainer"}>
-                <div>Login</div>
+                <div>Register</div>
             </div>
             <br />
             <div className={"inputContainer"}>
@@ -29,12 +29,18 @@ function Login() {  // Assuming movieId is passed as a prop to this component
                 <label className="errorLabel">{ }</label>
             </div>
             <br />
+            <div className={"inputContainer"}>
+                <input
+                    className={"inputButton"}
+                    type="button"
 
-            <button onClick={() => navigate("/dashboard")}> Login </button>
-            <button onClick={() => navigate("/register")}>Don't have an account?</button>
+                    value={"Log in"} />
+            </div>
+
+            <button>Rahted</button>
 
         </div>
     )
 }
 
-export default Login;
+export default Register;

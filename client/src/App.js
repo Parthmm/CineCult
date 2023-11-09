@@ -4,11 +4,16 @@ import Dashboard from "./routes/Dashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
 import Login from "./routes/Login";
+import Register from "./routes/Register";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <><Login /></>
+  },
+  {
+    path: "/register",
+    element: <><Register /></>
   },
   {
     path: "/dashboard",
