@@ -22,11 +22,9 @@ try:
 except mysql.connector.Error as e:
     print(f"Database connection error: {str(e)}")
 
-@app.route('/')
-def index():
-    return render_template('index.html') 
 
 
+# Gets movie dashboard info 
 @app.route('/get_dashboard_info', methods=['GET'])
 def get_dashboard_info():
     conn = mysql.connector.connect(**config)
@@ -58,7 +56,7 @@ def get_dashboard_info():
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
-
+# Gets all movies
 @app.route('/get_movies', methods=['GET'])
 def get_movies():
     conn = mysql.connector.connect(**config)
@@ -69,19 +67,50 @@ def get_movies():
     conn.close()
     response = jsonify(movies)
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
+    return response 
 
-@app.route('/add', methods=['POST'])
+# Adds a user 
+@app.route('/adduser', methods=['POST'])
 def add():
-    data = request.form['data']
+    data = request.get_json()
     conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (user_id) VALUES (%s)", (data,))
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'],))
+    user = cursor.fetchone()
+
+    if user:
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username already exists", 400
+    
+    cursor.execute("INSERT INTO users (user_id, name, password) VALUES (%s, %s, %s)", (data['user_id'], data['name'], data['password']))
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect(url_for('index')) 
+    return jsonify({'status': 'success', 'message': 'Form submitted successfully'})  
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM users WHERE name = %s AND password = %s", (data['name'], data['password']))
+    user = cursor.fetchone()
+
+    if not user:
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username or password is incorrect", 400
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+
+# Gets the reviews for a movie
 @app.route('/reviews/<movie_id>', methods=['GET']) 
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
@@ -94,6 +123,7 @@ def get_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
 def add_review(movie_id):
     review_text = request.form.get('review')
@@ -112,8 +142,9 @@ def add_review(movie_id):
         conn.close()
     
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
+    return response 
 
+# Edit movie review
 @app.route('/reviews/<movie_id>', methods=['PUT'])
 def update_review(movie_id):
     review_text = request.form.get('review')
@@ -137,6 +168,7 @@ def update_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Deletes all reviews for a movie 
 @app.route('/reviews/<movie_id>', methods=['DELETE'])
 def delete_review(movie_id):
     review_text = request.form.get('review')
