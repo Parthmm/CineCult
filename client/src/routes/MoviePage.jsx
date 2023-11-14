@@ -10,7 +10,7 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
 
 
     useEffect(() => {
-        fetch(`/reviews/${location.state.key}`)  // Use the port from config
+        fetch(`http://localhost:${config.PORT}/reviews/${location.state.key}`)  // Use the port from config
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network broken yeet")
@@ -29,7 +29,7 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
 
     const fetchReviews = (movieId) => {
         if (movieId) {
-            fetch(`/reviews/${movieId}`)
+            fetch(`http://localhost:${config.PORT}/reviews/${movieId}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Network broken yeet");
