@@ -9,6 +9,7 @@ function Register() {
 
     const [name, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("")
     const [error, setError] = useState("")
 
     const addUser = (e) => {
@@ -22,6 +23,7 @@ function Register() {
                 user_id: uuidv4(),
                 name: name,
                 password: password,
+                email: email
             }),
         })
             .then(response => {
@@ -33,7 +35,7 @@ function Register() {
             .then(data => {
 
                 if (data.error) {
-                    setError("Username already exists");
+                    setError("Error Registering. Try again.");
                 } else {
                     setError("Congrats on creating an account. Please go the the login page.");
                 }
@@ -56,7 +58,7 @@ function Register() {
                         onChange={(e) => {
                             setUsername(e.target.value)
                         }}
-                        placeholder="Enter your username here"
+                        placeholder="Enter username here"
                         className={"inputBox"} />
                     <label className="errorLabel">{ }</label>
                 </div>
@@ -67,12 +69,22 @@ function Register() {
                         onChange={(e) => {
                             setPassword(e.target.value)
                         }}
-                        placeholder="Enter your password here"
+                        placeholder="Enter password here"
                         className={"inputBox"} />
-
+                    <label className="errorLabel">{ }</label>
                 </div>
                 <br />
-                <label className="errorLabel">{error}</label>
+                <div className={"inputContainer"}>
+                    <input
+                        type="email"
+                        onChange={(e) => {
+                            setEmail(e.target.value)
+                        }}
+                        placeholder="Enter email address here"
+                        className={"inputBox"} />
+                    <label className="errorLabel">{error}</label>
+                </div>
+                <br />
                 <div>
                     <button type="submit">Register</button>
                 </div>
