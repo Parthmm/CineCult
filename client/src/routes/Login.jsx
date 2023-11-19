@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
@@ -32,8 +31,9 @@ function Login() {
                 if (data.error) {
                     setError("Username or password try again");
                 } else {
-                    navigate("/dashboard")
-                    setError("Logged in");
+                    localStorage.setItem('authToken', data.token);
+                    console.log("authtoken: " + data.token);
+                    navigate("/dashboard");
                 }
             })
             .catch(error => {

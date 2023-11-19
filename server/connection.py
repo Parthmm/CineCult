@@ -3,11 +3,13 @@ import mysql.connector
 from dotenv import dotenv_values
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'super_secret'
+jwt = JWTManager(app)
 CORS(app)
 bcrypt = Bcrypt(app)
-
 
 config = {
     'host': dotenv_values('.env')['DB_HOST'],
@@ -29,6 +31,7 @@ except mysql.connector.Error as e:
 
 # Gets movie dashboard info 
 @app.route('/get_dashboard_info', methods=['GET'])
+@jwt_required()
 def get_dashboard_info():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
@@ -114,6 +117,7 @@ def login():
 
     cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'], ))
     user = cursor.fetchone()
+    print(user)
     if not user or not bcrypt.check_password_hash(user[2], data['password']):
         # Username already exists, handle accordingly (e.g., return an error response)
         cursor.close()
@@ -123,20 +127,29 @@ def login():
     conn.commit()
     cursor.close()
     conn.close()
-    response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    access_token = create_access_token(identity=user[0])
+    response = jsonify({'token': access_token})
+    print(response)
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     return response
 
 # Gets the reviews for a movie
 @app.route('/reviews/<movie_id>', methods=['GET']) 
+@jwt_required()
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT review FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
-    movies = cursor.fetchall()
+    reviews = cursor.fetchall()
+    cursor.execute("SELECT name FROM movie WHERE movie_id = (%s) ", (movie_id, ))
+    movie_name = cursor.fetchone()
     cursor.close()
     conn.close()
-    response = jsonify(movies)
+    response_data = {
+        'reviews': reviews,
+        'name': movie_name
+    }
+    response = jsonify(response_data)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 

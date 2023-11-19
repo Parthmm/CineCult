@@ -7,10 +7,15 @@ function Dashboard() {
 
     //state to hold movies and tv shows
     const [dashboardInfo, setDashboardInfo] = useState([])
+    const authToken = localStorage.getItem('authToken');
 
     //everytime we navigate to the webpage
     useEffect(() => {
-        fetch(`http://localhost:${config.PORT}/get_dashboard_info`)  // Use the port from config
+        fetch(`http://localhost:${config.PORT}/get_dashboard_info`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+            },
+        })  // Use the port from config
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network broken yeet")
