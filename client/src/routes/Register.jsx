@@ -11,8 +11,8 @@ function Register() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
 
-    const addUser = () => {
-
+    const addUser = (e) => {
+        e.preventDefault();
         fetch(`http://localhost:${config.PORT}/adduser`, {
             method: 'POST',
             headers: {
@@ -46,34 +46,37 @@ function Register() {
 
     return (
         <div>
-            <div className={"titleContainer"}>
-                <div>Register</div>
-            </div>
-            <br />
-            <div className={"inputContainer"}>
-                <input
-                    onChange={(e) => {
-                        setUsername(e.target.value)
-                    }}
-                    placeholder="Enter your username here"
-                    className={"inputBox"} />
-                <label className="errorLabel">{ }</label>
-            </div>
-            <br />
-            <div className={"inputContainer"}>
-                <input
-                    onChange={(e) => {
-                        setPassword(e.target.value)
-                    }}
-                    placeholder="Enter your password here"
-                    className={"inputBox"} />
+            <form onSubmit={addUser}>
+                <div className={"titleContainer"}>
+                    <div>Register</div>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+                        onChange={(e) => {
+                            setUsername(e.target.value)
+                        }}
+                        placeholder="Enter your username here"
+                        className={"inputBox"} />
+                    <label className="errorLabel">{ }</label>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+                        type="password"
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                        }}
+                        placeholder="Enter your password here"
+                        className={"inputBox"} />
 
-            </div>
-            <br />
-            <label className="errorLabel">{error}</label>
-            <div>
-                <button onClick={addUser}>Register</button>
-            </div>
+                </div>
+                <br />
+                <label className="errorLabel">{error}</label>
+                <div>
+                    <button type="submit">Register</button>
+                </div>
+            </form>
         </div>
     )
 }

@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector 
-from dotenv import dotenv_values 
+from dotenv import dotenv_values
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
+bcrypt = Bcrypt(app)
 
 
 config = {
@@ -84,12 +87,14 @@ def add():
         cursor.close()
         conn.close()
         return "Username already exists", 400
-    
-    cursor.execute("INSERT INTO users (user_id, name, password) VALUES (%s, %s, %s)", (data['user_id'], data['name'], data['password']))
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    cursor.execute("INSERT INTO users (user_id, name, password) VALUES (%s, %s, %s)", (data['user_id'], data['name'], hashed_password))
     conn.commit()
     cursor.close()
     conn.close()
-    return jsonify({'status': 'success', 'message': 'Form submitted successfully'})  
+    response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -97,18 +102,20 @@ def login():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()  
 
-    cursor.execute("SELECT * FROM users WHERE name = %s AND password = %s", (data['name'], data['password']))
+    cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'], ))
     user = cursor.fetchone()
-
-    if not user:
+    if not user or not bcrypt.check_password_hash(user[2], data['password']):
         # Username already exists, handle accordingly (e.g., return an error response)
         cursor.close()
         conn.close()
         return "Username or password is incorrect", 400
+
     conn.commit()
     cursor.close()
     conn.close()
-    return jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
 
 # Gets the reviews for a movie
 @app.route('/reviews/<movie_id>', methods=['GET']) 

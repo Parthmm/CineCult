@@ -60,6 +60,7 @@ function Login() {
             <br />
             <div className={"inputContainer"}>
                 <input
+                    type="password"
                     onChange={(e) => {
                         setPassword(e.target.value)
                     }}
