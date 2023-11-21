@@ -84,7 +84,7 @@ def add():
 
     cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'],))
     user = cursor.fetchone()
-
+    
     if user:
         # Username already exists, handle accordingly (e.g., return an error response)
         cursor.close()
@@ -92,16 +92,15 @@ def add():
         return "Username already exists", 400
     
     cursor.execute("SELECT * FROM users WHERE email_address = %s", (data['email'],))
-    user = cursor.fetchone()
-
-    if user:
+    user_with_same_email = cursor.fetchone()
+    if user_with_same_email:
         # Username already exists, handle accordingly (e.g., return an error response)
         cursor.close()
         conn.close()
         return "Email is already associated with an existing user", 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    cursor.execute("INSERT INTO users (user_id, name, password) VALUES (%s, %s, %s)", (data['user_id'], data['name'], hashed_password))
+    cursor.execute("INSERT INTO users (user_id, name, password, email_address, username) VALUES (%s, %s, %s, %s, %s)", (data['user_id'], data['name'], hashed_password, data['email'], data['username']))
     conn.commit()
     cursor.close()
     conn.close()

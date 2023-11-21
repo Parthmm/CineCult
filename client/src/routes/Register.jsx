@@ -7,10 +7,11 @@ import { v4 as uuidv4 } from 'uuid';
 function Register() {
     const navigate = useNavigate();
 
-    const [name, setUsername] = useState("")
+    const [name, setName] = useState("")
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
     const [error, setError] = useState("")
+    const [username, setUsername] = useState("")
 
     const addUser = (e) => {
         e.preventDefault();
@@ -23,7 +24,8 @@ function Register() {
                 user_id: uuidv4(),
                 name: name,
                 password: password,
-                email: email
+                email: email,
+                username: username
             }),
         })
             .then(response => {
@@ -51,6 +53,16 @@ function Register() {
             <form onSubmit={addUser}>
                 <div className={"titleContainer"}>
                     <div>Register</div>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+                        onChange={(e) => {
+                            setName(e.target.value)
+                        }}
+                        placeholder="Enter full name here"
+                        className={"inputBox"} />
+                    <label className="errorLabel">{ }</label>
                 </div>
                 <br />
                 <div className={"inputContainer"}>
