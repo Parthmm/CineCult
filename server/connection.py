@@ -114,7 +114,7 @@ def login():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()  
 
-    cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'], ))
+    cursor.execute("SELECT * FROM users WHERE username = %s", (data['name'], ))
     user = cursor.fetchone()
     print(user)
     if not user or not bcrypt.check_password_hash(user[2], data['password']):
