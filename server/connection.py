@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector 
-from dotenv import dotenv_values 
+from dotenv import dotenv_values
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
-
-
+app.config['JWT_SECRET_KEY'] = 'super_secret'
+jwt = JWTManager(app)
+CORS(app)
+bcrypt = Bcrypt(app)
 
 config = {
     'host': dotenv_values('.env')['DB_HOST'],
@@ -22,12 +27,11 @@ try:
 except mysql.connector.Error as e:
     print(f"Database connection error: {str(e)}")
 
-@app.route('/')
-def index():
-    return render_template('index.html') 
 
 
+# Gets movie dashboard info 
 @app.route('/get_dashboard_info', methods=['GET'])
+@jwt_required()
 def get_dashboard_info():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
@@ -58,7 +62,7 @@ def get_dashboard_info():
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
-
+# Gets all movies
 @app.route('/get_movies', methods=['GET'])
 def get_movies():
     conn = mysql.connector.connect(**config)
@@ -69,31 +73,86 @@ def get_movies():
     conn.close()
     response = jsonify(movies)
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
+    return response 
 
-@app.route('/add', methods=['POST'])
+# Adds a user 
+@app.route('/adduser', methods=['POST'])
 def add():
-    data = request.form['data']
+    data = request.get_json()
     conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (user_id) VALUES (%s)", (data,))
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'],))
+    user = cursor.fetchone()
+    
+    if user:
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username already exists", 400
+    
+    cursor.execute("SELECT * FROM users WHERE email_address = %s", (data['email'],))
+    user_with_same_email = cursor.fetchone()
+    if user_with_same_email:
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Email is already associated with an existing user", 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    cursor.execute("INSERT INTO users (user_id, name, password, email_address, username) VALUES (%s, %s, %s, %s, %s)", (data['user_id'], data['name'], hashed_password, data['email'], data['username']))
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect(url_for('index')) 
+    response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM users WHERE username = %s", (data['name'], ))
+    user = cursor.fetchone()
+    print(user)
+    if not user or not bcrypt.check_password_hash(user[2], data['password']):
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username or password is incorrect", 400
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    access_token = create_access_token(identity=user[0])
+    response = jsonify({'token': access_token})
+    print(response)
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
+
+# Gets the reviews for a movie
 @app.route('/reviews/<movie_id>', methods=['GET']) 
+@jwt_required()
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT review FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
-    movies = cursor.fetchall()
+    reviews = cursor.fetchall()
+    cursor.execute("SELECT name FROM movie WHERE movie_id = (%s) ", (movie_id, ))
+    movie_name = cursor.fetchone()
     cursor.close()
     conn.close()
-    response = jsonify(movies)
+    response_data = {
+        'reviews': reviews,
+        'name': movie_name
+    }
+    response = jsonify(response_data)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
 def add_review(movie_id):
     review_text = request.form.get('review')
@@ -112,8 +171,9 @@ def add_review(movie_id):
         conn.close()
     
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
+    return response 
 
+# Edit movie review
 @app.route('/reviews/<movie_id>', methods=['PUT'])
 def update_review(movie_id):
     review_text = request.form.get('review')
@@ -137,6 +197,7 @@ def update_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Deletes all reviews for a movie 
 @app.route('/reviews/<movie_id>', methods=['DELETE'])
 def delete_review(movie_id):
     review_text = request.form.get('review')

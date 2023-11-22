@@ -1,35 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import config from "../config.json";
 
 function MoviePage() {  // Assuming movieId is passed as a prop to this component
     const [review, setReview] = useState('');
-    const [reviews, setReviews] = useState([])
-
-    const location = useLocation();
-
-
+    const [reviews, setReviews] = useState([]);
+    const [movieName, setMovieName] = useState('');
+    const authToken = localStorage.getItem('authToken');
+    const { movieId } = useParams();
+    
     useEffect(() => {
-        fetch(`/reviews/${location.state.key}`)  // Use the port from config
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network broken yeet")
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setReviews(data)
-            })
-            .catch((error) => {
-                console.error('Error fetching movies:', error);
-            });
-
-    }, []);
+        fetch(`http://localhost:${config.PORT}/reviews/${movieId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network broken yeet")
+            }
+            return response.json();
+        })
+        .then((data) => {
+            setMovieName(data.name);
+            setReviews(data.reviews);
+        })
+        .catch((error) => {
+            console.error('Error fetching movies:', error);
+        });
+        
+    }, [movieId, authToken]);
 
     const fetchReviews = (movieId) => {
         if (movieId) {
-            fetch(`/reviews/${movieId}`)
+            fetch(`http://localhost:${config.PORT}/reviews/${movieId}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            })
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Network broken yeet");
@@ -37,7 +45,8 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
                     return response.json();
                 })
                 .then((data) => {
-                    setReviews(data);
+                    setMovieName(data.name);
+                    setReviews(data.reviews);
                 })
                 .catch((error) => {
                     console.error('Error fetching reviews:', error);
@@ -50,14 +59,13 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
     }
 
     const handleSubmitReview = () => {
-        console.log(location.state.key);
         if (review.trim() === '') {
             alert('Please write a review before submitting.');
             return;
         }
 
         // Make an API call to the Flask server to save the review
-        fetch(`http://localhost:${config.PORT}/reviews/${location.state.key}`, {
+        fetch(`http://localhost:${config.PORT}/reviews/${movieId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -78,12 +86,12 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
                 alert('Error saving review. Please try again later.');
             });
 
-        fetchReviews(location.state.key);
+        fetchReviews(movieId);
     }
 
 
     const handleDeleteReview = () => {
-        fetch(`http://localhost:${config.PORT}/reviews/${location.state.key}`, {
+        fetch(`http://localhost:${config.PORT}/reviews/${movieId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -95,7 +103,7 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
                 alert('Error saving review. Please try again later.');
             });
 
-        fetchReviews(location.state.key);
+        fetchReviews(movieId);
     }
 
 
@@ -104,7 +112,7 @@ function MoviePage() {  // Assuming movieId is passed as a prop to this componen
     return (
         <div>
             <div>
-                Reviews:
+                Reviews for {movieName.name}:
                 {reviews.map((review) => {
                     return <div> <p>{review.review}</p> </div>
                 })}
