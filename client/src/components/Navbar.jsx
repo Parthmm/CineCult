@@ -10,6 +10,7 @@ function Navbar() {
     const logout = () => {
         // Clear the authentication token from localStorage
         localStorage.removeItem('authToken');
+        localStorage.removeItem('username')
         // Navigate to the login page or any other appropriate page
         navigate("/");
     };

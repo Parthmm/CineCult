@@ -31,6 +31,8 @@ function Login() {
                 if (data.error) {
                     setError("Username or password try again");
                 } else {
+                    // set username in local storage 
+                    localStorage.setItem('username', name)
                     localStorage.setItem('authToken', data.token);
                     console.log("authtoken: " + data.token);
                     navigate("/dashboard");

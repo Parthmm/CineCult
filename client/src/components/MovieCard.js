@@ -26,7 +26,7 @@ function MovieCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={() => navigate(`/movie/${props.id}`, { state: { key: props.id } })}>View Reviews</Button>
+                <Button size="small" onClick={() => navigate(`/movie/${props.id}`, { state: { key: props.id, name: props.name } })}>View Reviews</Button>
             </CardActions>
         </Card>
     );
