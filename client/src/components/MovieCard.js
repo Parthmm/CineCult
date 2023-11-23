@@ -5,12 +5,13 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router-dom";
+import styles from "../styles/Dashboard.module.css"
 
 function MovieCard(props) {
     const navigate = useNavigate();
 
     return (
-        <Card variant="outlined" style={{ width: '250px', height: '200px' }}>
+        <Card className={styles.dashboard_card} variant="outlined" style={{ width: '250px', height: '200px' }}>
             <CardContent>
                 <Typography variant="h5" component="div" noWrap textOverflow="ellipsis">
                     {props.name}

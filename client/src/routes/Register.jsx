@@ -4,6 +4,8 @@ import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
+import styles from "../styles/Form.module.css"
+
 function Register() {
     const navigate = useNavigate();
 
@@ -49,10 +51,14 @@ function Register() {
     }
 
     return (
-        <div>
-            <form onSubmit={addUser}>
+        <div className={styles.form_background}>
+
+            <h1>Cinecult</h1>
+
+
+            <form className={styles.form_div} onSubmit={addUser}>
                 <div className={"titleContainer"}>
-                    <div>Register</div>
+                    <h2>Register</h2>
                 </div>
                 <br />
                 <div className={"inputContainer"}>
@@ -61,7 +67,7 @@ function Register() {
                             setName(e.target.value)
                         }}
                         placeholder="Enter full name here"
-                        className={"inputBox"} />
+                        className={styles.input_box} />
                     <label className="errorLabel">{ }</label>
                 </div>
                 <br />
@@ -71,7 +77,7 @@ function Register() {
                             setUsername(e.target.value)
                         }}
                         placeholder="Enter username here"
-                        className={"inputBox"} />
+                        className={styles.input_box} />
                     <label className="errorLabel">{ }</label>
                 </div>
                 <br />
@@ -82,7 +88,7 @@ function Register() {
                             setPassword(e.target.value)
                         }}
                         placeholder="Enter password here"
-                        className={"inputBox"} />
+                        className={styles.input_box} />
                     <label className="errorLabel">{ }</label>
                 </div>
                 <br />
@@ -93,13 +99,15 @@ function Register() {
                             setEmail(e.target.value)
                         }}
                         placeholder="Enter email address here"
-                        className={"inputBox"} />
-                    <label className="errorLabel">{error}</label>
+                        className={styles.input_box} />
+
                 </div>
                 <br />
-                <div>
-                    <button type="submit">Register</button>
-                </div>
+
+                <button className={styles.form_button} type="submit">Register</button>
+
+                <label className="errorLabel">{error}</label>
+
             </form>
         </div>
     )

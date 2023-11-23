@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import config from "../config.json";
 import Review from "../components/Review"
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box'
+import Modal from '@mui/material/Modal'
+import Button from '@mui/material/Button'
+
+//styling 
+import styles from "../styles/Dashboard.module.css"
+import reviewStyles from "../styles/Review.module.css"
+import formStyles from "../styles/Form.module.css"
 
 function MoviePage() {
     const [review, setReview] = useState('');
@@ -12,6 +21,11 @@ function MoviePage() {
     //gets the shit from the location can't get it from params. Fixes case where there no review and the Reviews for doesn't show up
     const { state } = useLocation();
     const { id, name } = state;
+
+    //modal stuff from MUI docs 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
 
     useEffect(() => {
@@ -138,27 +152,70 @@ function MoviePage() {
 
 
     return (
-        <div>
-            <div>
+        <div className={reviewStyles.review_background}>
+
+            <h1>
                 Reviews for {name}:
+            </h1>
+            <div className={styles.dashboard_background}>
+
 
                 {reviews.map((review) => {
                     return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} ></Review>
                 })}
             </div>
-            <h2>Write a Review</h2>
-            <textarea
-                value={review}
-                onChange={handleReviewChange}
-                placeholder="Write your review here..."
-                rows="5"
-                cols="50"
-            />
+
+            {/*
+            <div className={formStyles.form_div}>
+                <h2>Write a Review</h2>
+                <textarea
+                    className={formStyles.input_box}
+                    value={review}
+                    onChange={handleReviewChange}
+                    placeholder="Write your review here..."
+                    rows="5"
+                    cols="50"
+                />
+
+                <button className={formStyles.form_button} onClick={handleSubmitReview}>Submit Review</button>
+
+
+                <button className={formStyles.form_button} onClick={handleDeleteReview}>Delete all Reviews</button>
+            </div>
+            */}
             <br />
-            <button onClick={handleSubmitReview}>Submit Review</button>
 
 
-            <button onClick={handleDeleteReview}>Delete all Reviews</button>
+            <Button onClick={handleOpen}>Write a review</Button>
+            <Modal
+                className={formStyles.form_background}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <div className={formStyles.form_div}>
+                    <h2>Write a Review</h2>
+                    <textarea
+                        className={formStyles.input_box}
+                        value={review}
+                        onChange={handleReviewChange}
+                        placeholder="Write your review here..."
+                        rows="5"
+                        cols="50"
+                    />
+
+                    <button className={formStyles.form_button} onClick={() => { handleSubmitReview(); handleClose(); }}>Submit Review</button>
+
+
+                    <button className={formStyles.form_button} onClick={handleDeleteReview}>Delete all Reviews</button>
+                </div>
+
+            </Modal >
+
+
+
+
         </div >
     )
 }

@@ -5,6 +5,7 @@ import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import './styles/App.css'; // Import your global styles
 
 const router = createBrowserRouter([
   {

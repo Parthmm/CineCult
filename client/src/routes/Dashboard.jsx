@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import TVShowCard from "../components/TVShowCard";
-import config from "../config.json";  // Import the config.json file
+import config from "../config.json";  // Import the config.json file 
+import styles from "../styles/Dashboard.module.css"
 
 function Dashboard() {
 
@@ -33,10 +34,12 @@ function Dashboard() {
     }, []);
 
     return (
-        <div>
-            {dashboardInfo.map((movie) => {
-                return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
-            })}
+        <div className={styles.dashboard_background}>
+            {
+                dashboardInfo.map((movie) => {
+                    return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
+                })
+            }
         </div >
     )
 }
