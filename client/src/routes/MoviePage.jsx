@@ -167,7 +167,7 @@ function MoviePage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} rating={value} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} rating={review.rating} ></Review>
                 })}
             </div>
 
