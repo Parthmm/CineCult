@@ -159,7 +159,7 @@ def add_review(movie_id):
     cursor = conn.cursor()
     
     try:
-        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review) VALUES (%s,%s, %s)", (data['username'],data['movieId'], data['review']))  # Corrected the SQL
+        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating) VALUES (%s,%s, %s, %s)", (data['username'],data['movieId'], data['review'], data['rating']))  # Corrected the SQL
         conn.commit()
         response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
     except mysql.connector.Error as e:

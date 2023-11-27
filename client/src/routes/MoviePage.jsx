@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
+import Rating from '@mui/material/Rating'
 
 //styling 
 import styles from "../styles/Dashboard.module.css"
@@ -26,6 +27,10 @@ function MoviePage() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    //rating states
+    const [value, setValue] = useState(NaN);
+
 
 
     useEffect(() => {
@@ -88,6 +93,7 @@ function MoviePage() {
                 username: localStorage.getItem("username"),
                 movieId: movieId,
                 review: review,
+                rating: value,
 
             })
         })
@@ -161,7 +167,7 @@ function MoviePage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} rating={value} ></Review>
                 })}
             </div>
 
@@ -203,6 +209,15 @@ function MoviePage() {
                         placeholder="Write your review here..."
                         rows="5"
                         cols="50"
+                    />
+
+                    <Typography component="legend">Give it a Rating</Typography>
+                    <Rating
+                        name="simple-controlled"
+                        value={value}
+                        onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}
                     />
 
                     <button className={formStyles.form_button} onClick={() => { handleSubmitReview(); handleClose(); }}>Submit Review</button>

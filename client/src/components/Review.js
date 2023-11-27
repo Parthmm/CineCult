@@ -22,6 +22,9 @@ function Review(props) {
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         Review: {props.review}
                     </Typography>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Rating: {props.rating}
+                    </Typography>
                 </CardContent>
 
                 {props.isUser && (
