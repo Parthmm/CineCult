@@ -138,7 +138,7 @@ def login():
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT review, username FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
+    cursor.execute("SELECT review, username, rating FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
     reviews = cursor.fetchall() 
     print(reviews)
     cursor.close()
