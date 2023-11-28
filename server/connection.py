@@ -151,7 +151,7 @@ def login():
 
     cursor.execute("SELECT * FROM users WHERE username = %s", (data['name'], ))
     user = cursor.fetchone()
-    print(user)
+
     if not user or not bcrypt.check_password_hash(user[2], data['password']):
         # Username already exists, handle accordingly (e.g., return an error response)
         cursor.close()
@@ -163,7 +163,31 @@ def login():
     conn.close()
     access_token = create_access_token(identity=user[0])
     response = jsonify({'token': access_token})
-    print(response)
+
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
+
+@app.route('/change_password', methods=['POST']) 
+@jwt_required()
+def change_password(): 
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE username = %s", (data['username'], ))
+    user = cursor.fetchone()
+    if not bcrypt.check_password_hash(user[2], data['old_pw']):
+        cursor.close()
+        conn.close()
+        return "Incorrect password, please try again.", 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['new_pw']).decode('utf-8')
+    cursor.execute("UPDATE users SET password = %s WHERE username = %s", (hashed_password, data['username'],))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    response = jsonify({"message": "Password changed successfully!"})
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     return response
 

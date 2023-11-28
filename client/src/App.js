@@ -8,6 +8,7 @@ import WatchListPage from "./routes/WatchListPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import './styles/App.css'; // Import your global styles
+import PasswordChangeForm from "./components/PasswordChangeForm";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard-tvshows",
     element: <><Navbar /><TVDashboard /></>
+  },
+  {
+    path: "changePassword",
+    element: <><PasswordChangeForm /></>
   },
   {
     path: "/movie/:movieId",
