@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import config from "../config.json";
 import Review from "../components/Review"
 import Typography from '@mui/material/Typography';
@@ -21,6 +21,15 @@ function MoviePage() {
     //gets the shit from the location can't get it from params. Fixes case where there no review and the Reviews for doesn't show up
     const { state } = useLocation();
     const { id, name } = state;
+
+        // Use useNavigate instead of useHistory
+        const navigate = useNavigate();
+
+        // Function to navigate to the watchlist
+        const goToWatchlist = () => {
+            // Assuming you have a route named '/watchlist'
+            navigate('/watchlist');
+        };
 
     //modal stuff from MUI docs 
     const [open, setOpen] = useState(false);
@@ -161,7 +170,7 @@ function MoviePage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") === review.username} deleteReview={deleteReview} ></Review>
                 })}
             </div>
 
@@ -187,6 +196,7 @@ function MoviePage() {
 
 
             <Button onClick={handleOpen}>Write a review</Button>
+            <Button onClick={goToWatchlist}>Add to WatchList</Button>
             <Modal
                 className={formStyles.form_background}
                 open={open}

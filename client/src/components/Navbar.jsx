@@ -19,6 +19,7 @@ function Navbar() {
         <div className="navbar">
             <Stack width="90%" marginLeft={2} spacing={4} direction="row">
                 <NavbarLink text="HOME" link="/dashboard" />
+                <NavbarLink text="WATCHLIST" link="/WatchList" />
             </Stack>
             <Box>
                 <button onClick={logout}>LOG OUT</button>

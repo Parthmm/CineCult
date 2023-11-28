@@ -6,6 +6,7 @@ import TVShowPage from "./routes/TVShowPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import './styles/App.css'; // Import your global styles
+import WatchListPage from "./routes/WatchListPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/tv-show",
     element: <><Navbar /><TVShowPage /></>
+  },
+  {
+    path: "/watchlist",
+    element: <><Navbar/><WatchListPage/></>
   }
 ]);
 
