@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
+//styling 
+import styles from "../styles/Form.module.css"
+
 function Login() {
     const navigate = useNavigate();
 
@@ -31,6 +34,8 @@ function Login() {
                 if (data.error) {
                     setError("Username or password try again");
                 } else {
+                    // set username in local storage 
+                    localStorage.setItem('username', name)
                     localStorage.setItem('authToken', data.token);
                     console.log("authtoken: " + data.token);
                     navigate("/dashboard");
@@ -43,38 +48,46 @@ function Login() {
     }
 
     return (
-        <div>
-            <div className={"titleContainer"}>
-                <div>Login</div>
-            </div>
-            <br />
-            <div className={"inputContainer"}>
-                <input
-                    onChange={(e) => {
-                        setUsername(e.target.value)
-                    }}
-                    placeholder="Enter your username here"
-                    className={"inputBox"} />
-                <label className="errorLabel">{ }</label>
-            </div>
-            <br />
-            <div className={"inputContainer"}>
-                <input
-                    type="password"
-                    onChange={(e) => {
-                        setPassword(e.target.value)
-                    }}
-                    placeholder="Enter your password here"
-                    className={"inputBox"} />
+        <div className={styles.form_background}>
+
+            <h1>Cinecult</h1>
+
+            <div className={styles.form_div}>
+
+                <div className={"titleContainer"}>
+                    <h2>Login</h2>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+                        onChange={(e) => {
+                            setUsername(e.target.value)
+                        }}
+                        placeholder="Enter your username here"
+                        className={styles.input_box} />
+                    <label className="errorLabel">{ }</label>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+
+                        type="password"
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                        }}
+                        placeholder="Enter your password here"
+                        className={styles.input_box} />
+
+                </div>
+                <br />
+                <label className="errorLabel">{error}</label>
+
+                <button className={styles.form_button} onClick={login} > Login </button>
+                <button className={styles.form_button} onClick={() => navigate("/register")}>Don't have an account?</button>
 
             </div>
-            <br />
-            <label className="errorLabel">{error}</label>
 
-            <button onClick={login}> Login </button>
-            <button onClick={() => navigate("/register")}>Don't have an account?</button>
-
-        </div>
+        </div >
     )
 }
 

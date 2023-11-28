@@ -3,8 +3,10 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./routes/Dashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
+import WatchListPage from "./routes/WatchListPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import './styles/App.css'; // Import your global styles
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/tv-show",
     element: <><Navbar /><TVShowPage /></>
+  },
+  {
+    path: "/watchList",
+    element: <><Navbar  /><WatchListPage/></>
   }
 ]);
 

@@ -10,7 +10,7 @@ function TVShowCard() {
     const navigate = useNavigate();
 
     return (
-        <Card variant="outlined" style={{width: '250px', height:'200px'}}>
+        <Card variant="outlined" style={{ width: '250px', height: '200px' }}>
             <CardContent>
                 <Typography variant="h5" component="div" noWrap textOverflow="ellipsis">
                     TV Show Name

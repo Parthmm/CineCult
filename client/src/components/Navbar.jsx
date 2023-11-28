@@ -10,6 +10,7 @@ function Navbar() {
     const logout = () => {
         // Clear the authentication token from localStorage
         localStorage.removeItem('authToken');
+        localStorage.removeItem('username')
         // Navigate to the login page or any other appropriate page
         navigate("/");
     };
@@ -18,6 +19,7 @@ function Navbar() {
         <div className="navbar">
             <Stack width="90%" marginLeft={2} spacing={4} direction="row">
                 <NavbarLink text="HOME" link="/dashboard" />
+                <NavbarLink text="WATCHLIST" link="/watchList" />
             </Stack>
             <Box>
                 <button onClick={logout}>LOG OUT</button>

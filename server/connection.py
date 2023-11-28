@@ -138,15 +138,13 @@ def login():
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT review FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
-    reviews = cursor.fetchall()
-    cursor.execute("SELECT name FROM movie WHERE movie_id = (%s) ", (movie_id, ))
-    movie_name = cursor.fetchone()
+    cursor.execute("SELECT review, username, rating FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
+    reviews = cursor.fetchall() 
+    print(reviews)
     cursor.close()
     conn.close()
     response_data = {
-        'reviews': reviews,
-        'name': movie_name
+        'reviews': reviews
     }
     response = jsonify(response_data)
     response.headers['Access-Control-Allow-Origin'] = '*'
@@ -154,14 +152,14 @@ def get_review(movie_id):
 
 # Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
-def add_review(movie_id):
-    review_text = request.form.get('review')
-
+def add_review(movie_id): 
+    data = request.get_json()
+    
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()
     
     try:
-        cursor.execute("INSERT INTO movie_reviews (movie_id, review) VALUES (%s, %s)", (movie_id, review_text))  # Corrected the SQL
+        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating) VALUES (%s,%s, %s, %s)", (data['username'],data['movieId'], data['review'], data['rating']))  # Corrected the SQL
         conn.commit()
         response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
     except mysql.connector.Error as e:
@@ -188,6 +186,28 @@ def update_review(movie_id):
             response = jsonify({"error": "Review not found for the given movie_id."})
         else:
             response = jsonify({"message": "Review updated successfully!"})
+    except mysql.connector.Error as e:
+        response = jsonify({"error": str(e)})
+    finally:
+        cursor.close()
+        conn.close()
+    
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response 
+
+# Delete a review for a movie 
+@app.route('/reviews/<movie_id>/<username>', methods=['DELETE']) 
+def delete_single_review(movie_id,username): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("DELETE FROM movie_reviews WHERE movie_id = %s and username = %s", (movie_id,username))
+        conn.commit()
+        if cursor.rowcount == 0:
+            response = jsonify({"error": "Review not found for the given movie_id."})
+        else:
+            response = jsonify({"message": "Review deleted successfully!"})
     except mysql.connector.Error as e:
         response = jsonify({"error": str(e)})
     finally:
