@@ -1,19 +1,9 @@
 import { Stack } from "@mui/material";
 import "../css/Navbar.css"
 import NavbarLink from "./NavbarLink";
-import { Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import Settings from "./Settings";
 
 function Navbar() {
-    const navigate = useNavigate();
-
-    const logout = () => {
-        // Clear the authentication token from localStorage
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('username')
-        // Navigate to the login page or any other appropriate page
-        navigate("/");
-    };
 
     return (
         <div className="navbar">
@@ -21,9 +11,7 @@ function Navbar() {
                 <NavbarLink text="HOME" link="/dashboard" />
                 <NavbarLink text="WATCHLIST" link="/watchList" />
             </Stack>
-            <Box>
-                <button onClick={logout}>LOG OUT</button>
-            </Box>
+            <Settings/>
         </div>
     )
 }
