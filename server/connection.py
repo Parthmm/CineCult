@@ -30,9 +30,9 @@ except mysql.connector.Error as e:
 
 
 # Gets movie dashboard info 
-@app.route('/get_dashboard_info', methods=['GET'])
+@app.route('/get_movie_dashboard_info', methods=['GET'])
 @jwt_required()
-def get_dashboard_info():
+def get_movie_dashboard_info():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""SELECT
@@ -47,6 +47,41 @@ def get_dashboard_info():
                     has AS h
                 JOIN
                     movie AS m ON h.movie_id = m.movie_id
+                JOIN
+                    genre AS g ON h.genre_id = g.genre_id
+                JOIN
+                    actor AS a ON h.actor_id = a.actor_id
+                JOIN
+                    director AS d ON h.director_id = d.director_id
+                JOIN
+                    language AS l ON h.language_id = l.language_id""")
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    response = jsonify(movies)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+# Gets movie dashboard info 
+@app.route('/get_tv_dashboard_info', methods=['GET'])
+@jwt_required()
+def get_tv_dashboard_info():
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""SELECT
+                    t.name AS tv_name, 
+                    t.avg_rating as tv_rating, 
+                    t.tv_id as tv_id,
+                    t.numberSeasons as numberSeasons,
+                    t.numberEpisodes as numberEpisodes,
+                    g.Name AS genre,
+                    a.Name AS actor_name,
+                    d.Name AS director_name,
+                    l.Name AS language
+                FROM
+                    has AS h
+                JOIN
+                    tv_show AS t ON h.tv_id = t.tv_id
                 JOIN
                     genre AS g ON h.genre_id = g.genre_id
                 JOIN
@@ -150,6 +185,24 @@ def get_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Gets the reviews for a movie
+@app.route('/tvreviews/<tv_id>', methods=['GET']) 
+@jwt_required()
+def get_tv_review(tv_id): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT review, username FROM tv_reviews WHERE tv_id = (%s) ", (tv_id, ))
+    reviews = cursor.fetchall() 
+    print(reviews)
+    cursor.close()
+    conn.close()
+    response_data = {
+        'reviews': reviews
+    }
+    response = jsonify(response_data)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
 # Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
 def add_review(movie_id): 
@@ -160,6 +213,27 @@ def add_review(movie_id):
     
     try:
         cursor.execute("INSERT INTO movie_reviews (username, movie_id, review) VALUES (%s,%s, %s)", (data['username'],data['movieId'], data['review']))  # Corrected the SQL
+        conn.commit()
+        response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
+    except mysql.connector.Error as e:
+        response = jsonify({"error": str(e)})
+    finally:
+        cursor.close()
+        conn.close()
+    
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response 
+
+# Adds a review for a movie 
+@app.route('/tvreviews/<tv_id>', methods=['POST'])
+def add_tv_review(tv_id): 
+    data = request.get_json()
+    
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review) VALUES (%s,%s, %s)", (data['username'],data['tv_id'], data['review']))  # Corrected the SQL
         conn.commit()
         response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
     except mysql.connector.Error as e:
@@ -217,6 +291,28 @@ def delete_single_review(movie_id,username):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Delete a review for a tv 
+@app.route('/tvreviews/<tv_id>/<username>', methods=['DELETE']) 
+def delete_tv_single_review(tv_id,username): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("DELETE FROM tv_reviews WHERE tv_id = %s and username = %s", (tv_id,username))
+        conn.commit()
+        if cursor.rowcount == 0:
+            response = jsonify({"error": "Review not found for the given tv_id."})
+        else:
+            response = jsonify({"message": "Review deleted successfully!"})
+    except mysql.connector.Error as e:
+        response = jsonify({"error": str(e)})
+    finally:
+        cursor.close()
+        conn.close()
+    
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
 # Deletes all reviews for a movie 
 @app.route('/reviews/<movie_id>', methods=['DELETE'])
 def delete_review(movie_id):
@@ -230,6 +326,30 @@ def delete_review(movie_id):
         conn.commit()
         if cursor.rowcount == 0:
             response = jsonify({"error": "Review not found for the given movie_id."})
+        else:
+            response = jsonify({"message": "Review deleted successfully!"})
+    except mysql.connector.Error as e:
+        response = jsonify({"error": str(e)})
+    finally:
+        cursor.close()
+        conn.close()
+    
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+# Deletes all reviews for a movie 
+@app.route('/tvreviews/<tv_id>', methods=['DELETE'])
+def delete_tv_review(tv_id):
+    review_text = request.form.get('review')
+
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("DELETE FROM tv_reviews WHERE tv_id = %s", (tv_id,))
+        conn.commit()
+        if cursor.rowcount == 0:
+            response = jsonify({"error": "Review not found for the given tv_id."})
         else:
             response = jsonify({"message": "Review deleted successfully!"})
     except mysql.connector.Error as e:

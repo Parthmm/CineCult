@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Dashboard from "./routes/Dashboard";
+import MovieDashboard from "./routes/MovieDashboard";
+import TVDashboard from "./routes/TVDashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
 import Login from "./routes/Login";
@@ -17,15 +18,19 @@ const router = createBrowserRouter([
     element: <><Register /></>
   },
   {
-    path: "/dashboard",
-    element: <><Navbar /><Dashboard /></>
+    path: "/dashboard-movies",
+    element: <><Navbar /><MovieDashboard /></>
+  },
+  {
+    path: "/dashboard-tvshows",
+    element: <><Navbar /><TVDashboard /></>
   },
   {
     path: "/movie/:movieId",
     element: <><Navbar /><MoviePage /></>
   },
   {
-    path: "/tv-show",
+    path: "/tvshow/:tvShowId",
     element: <><Navbar /><TVShowPage /></>
   }
 ]);

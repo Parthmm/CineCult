@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
-import TVShowCard from "../components/TVShowCard";
 import config from "../config.json";  // Import the config.json file 
 import styles from "../styles/Dashboard.module.css"
 
-function Dashboard() {
+function MovieDashboard() {
 
     //state to hold movies and tv shows
     const [dashboardInfo, setDashboardInfo] = useState([])
@@ -12,7 +11,7 @@ function Dashboard() {
 
     //everytime we navigate to the webpage
     useEffect(() => {
-        fetch(`http://localhost:${config.PORT}/get_dashboard_info`, {
+        fetch(`http://localhost:${config.PORT}/get_movie_dashboard_info`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
             },
@@ -44,4 +43,4 @@ function Dashboard() {
     )
 }
 
-export default Dashboard;
+export default MovieDashboard;
