@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import config from "../config.json";
 import Review from "../components/Review"
 import Typography from '@mui/material/Typography';
@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
 import Rating from '@mui/material/Rating'
+
 
 //styling 
 import styles from "../styles/Dashboard.module.css"
@@ -16,6 +17,7 @@ import formStyles from "../styles/Form.module.css"
 function MoviePage() {
     const [review, setReview] = useState('');
     const [reviews, setReviews] = useState([]);
+    
 
     const authToken = localStorage.getItem('authToken');
     const { movieId } = useParams();
@@ -32,6 +34,12 @@ function MoviePage() {
     const [value, setValue] = useState(NaN);
 
 
+    //get access to history to go to WatchList
+    const navigate = useNavigate();
+    //function to navigate to the WatchList
+    const goToWatchList = () => {
+        navigate('/WatchList');
+    };
 
     useEffect(() => {
         //get the reviews 
@@ -167,7 +175,7 @@ function MoviePage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} rating={value} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") === review.username} deleteReview={deleteReview} rating={value} ></Review>
                 })}
             </div>
 
@@ -190,9 +198,9 @@ function MoviePage() {
             </div>
             */}
             <br />
-
-
+            
             <Button onClick={handleOpen}>Write a review</Button>
+            <Button onClick={goToWatchList}> Go To WatchList </Button>
             <Modal
                 className={formStyles.form_background}
                 open={open}
