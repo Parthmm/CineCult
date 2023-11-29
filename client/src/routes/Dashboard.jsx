@@ -24,7 +24,6 @@ function Dashboard() {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
                 setDashboardInfo(data)
             })
             .catch((error) => {

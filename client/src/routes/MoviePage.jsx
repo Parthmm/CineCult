@@ -17,7 +17,7 @@ import formStyles from "../styles/Form.module.css"
 function MoviePage() {
     const [review, setReview] = useState('');
     const [reviews, setReviews] = useState([]);
-    
+
 
     const authToken = localStorage.getItem('authToken');
     const { movieId } = useParams();
@@ -63,6 +63,7 @@ function MoviePage() {
                 })
                 .then((data) => {
                     setReviews(data.reviews);
+                    console.log(data.reviews)
                 })
                 .catch((error) => {
                     console.error('Error fetching reviews:', error);
@@ -102,6 +103,7 @@ function MoviePage() {
                 movieId: movieId,
                 review: review,
                 rating: value,
+                reviewer: localStorage.getItem("isReviewer")
 
             })
         })
@@ -175,7 +177,7 @@ function MoviePage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} rating={review.rating} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} isReviewer={review.isReviewer} deleteReview={deleteReview} rating={review.rating} ></Review>
                 })}
             </div>
 
@@ -198,7 +200,7 @@ function MoviePage() {
             </div>
             */}
             <br />
-            
+
             <Button onClick={handleOpen}>Write a review</Button>
             <Button onClick={goToWatchList}> Go To WatchList </Button>
             <Modal

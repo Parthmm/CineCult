@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 //styling 
 import styles from "../styles/Form.module.css"
 
-function Login() {
+function Login(props) {
     const navigate = useNavigate();
 
     const [name, setUsername] = useState("")
@@ -13,7 +13,18 @@ function Login() {
     const [error, setError] = useState("")
 
     const login = () => {
-        fetch(`http://localhost:${config.PORT}/login`, {
+
+        //sets local storage and the correct post
+        let login = ""
+        if (props.reviewer == true) {
+            login = "loginreviewer"
+            localStorage.setItem('isReviewer', 1)
+        }
+        else {
+            login = "login"
+            localStorage.setItem('isReviewer', 0)
+        }
+        fetch(`http://localhost:${config.PORT}/${login}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +94,13 @@ function Login() {
                 <label className="errorLabel">{error}</label>
 
                 <button className={styles.form_button} onClick={login} > Login </button>
-                <button className={styles.form_button} onClick={() => navigate("/register")}>Don't have an account?</button>
+
+                {!props.reviewer && (
+                    <>
+                        <button className={styles.form_button} onClick={() => navigate("/reviewer-login")}>Are you a reviewer?</button>
+                        <button className={styles.form_button} onClick={() => navigate("/register")}>Don't have an account?</button>
+                    </>
+                )}
 
             </div>
 

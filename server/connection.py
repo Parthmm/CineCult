@@ -106,7 +106,7 @@ def add():
     conn.close()
     response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-    return response
+    return response 
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -130,6 +130,31 @@ def login():
     response = jsonify({'token': access_token})
     print(response)
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response 
+
+@app.route('/loginreviewer', methods=['POST'])
+def loginreviewer():
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM reviewer WHERE username = %s", (data['name'], ))
+    user = cursor.fetchone()
+    print(user) 
+    print(user[2])
+    if not user or not bcrypt.check_password_hash(user[2], data['password']):
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username or password is incorrect", 400
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    access_token = create_access_token(identity=user[0])
+    response = jsonify({'token': access_token})
+    print(response)
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     return response
 
 # Gets the reviews for a movie
@@ -138,7 +163,7 @@ def login():
 def get_review(movie_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT review, username, rating FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
+    cursor.execute("SELECT review, username, rating, isReviewer FROM movie_reviews WHERE movie_id = (%s) ", (movie_id, ))
     reviews = cursor.fetchall() 
     print(reviews)
     cursor.close()
@@ -159,7 +184,7 @@ def add_review(movie_id):
     cursor = conn.cursor()
     
     try:
-        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating) VALUES (%s,%s, %s, %s)", (data['username'],data['movieId'], data['review'], data['rating']))  # Corrected the SQL
+        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating, isReviewer) VALUES (%s,%s, %s, %s, %s)", (data['username'],data['movieId'], data['review'], data['rating'], data['reviewer']))  # Corrected the SQL
         conn.commit()
         response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
     except mysql.connector.Error as e:
