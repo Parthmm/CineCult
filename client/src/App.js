@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     element: <><Navbar /><TVShowPage /></>
   },
   {
-    path: "/watchlist",
+    path: "/WatchList",
     element: <><Navbar/><WatchListPage/></>
   }
 ]);

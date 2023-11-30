@@ -241,6 +241,66 @@ def delete_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+# Add to Watchlist
+def add_to_watchlist(user_id, movie_id=None, tv_id=None):
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("INSERT INTO watchlist (user_id, movie_id, tv_id) VALUES (%s, %s, %s)", (user_id, movie_id, tv_id))
+        conn.commit()
+        response = {"message": "Added to watchlist successfully!"}
+    except mysql.connector.Error as e:
+        response = {"error": str(e)}
+    finally:
+        cursor.close()
+        conn.close()
+
+    return response
+
+# Remove from Watchlist
+def remove_from_watchlist(user_id, movie_id=None, tv_id=None):
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("DELETE FROM watchlist WHERE user_id = %s AND movie_id = %s AND tv_id = %s", (user_id, movie_id, tv_id))
+        conn.commit()
+        if cursor.rowcount == 0:
+            response = {"error": "Item not found in the watchlist."}
+        else:
+            response = {"message": "Removed from watchlist successfully!"}
+    except mysql.connector.Error as e:
+        response = {"error": str(e)}
+    finally:
+        cursor.close()
+        conn.close()
+
+    return response
+
+# Add to Watchlist
+@app.route('/add_to_watchlist', methods=['POST'])
+@jwt_required()
+def add_to_watchlist_route():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    movie_id = data.get('movie_id')
+    tv_id = data.get('tv_id')
+
+    response = add_to_watchlist(user_id, movie_id, tv_id)
+    return jsonify(response)
+
+# Remove from Watchlist
+@app.route('/remove_from_watchlist', methods=['POST'])
+@jwt_required()
+def remove_from_watchlist_route():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    movie_id = data.get('movie_id')
+    tv_id = data.get('tv_id')
+
+    response = remove_from_watchlist(user_id, movie_id, tv_id)
+    return jsonify(response)
 
 
 if __name__ == '__main__':
