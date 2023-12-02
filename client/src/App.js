@@ -13,7 +13,11 @@ import PasswordChangeForm from "./components/PasswordChangeForm";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <><Login /></>
+    element: <><Login reviewer={false} /></>
+  },
+  {
+    path: "reviewer-login/",
+    element: <><Login reviewer={true} /></>
   },
   {
     path: "/register",
@@ -41,7 +45,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/watchList",
-    element: <><Navbar  /><WatchListPage/></>
+    element: <><Navbar /><WatchListPage /></>
   }
 ]);
 

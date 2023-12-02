@@ -12,7 +12,7 @@ function Navbar() {
                 <NavbarLink text="TV Shows" link="/dashboard-tvshows" />
                 <NavbarLink text="Watchlist" link="/watchList" />
             </Stack>
-            <Settings/>
+            <Settings />
         </div>
     )
 }

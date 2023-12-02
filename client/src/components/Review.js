@@ -10,11 +10,14 @@ import styles from "../styles/Dashboard.module.css"
 
 function Review(props) {
 
+    const cardStyle = {
+        backgroundColor: props.isReviewer ? 'yellow' : 'inherit',
+    };
 
     return (
         <div className={styles.dashboard_card}>
 
-            <Card variant="outlined" >
+            <Card variant="outlined" style={cardStyle} >
                 <CardContent>
                     <Typography variant="h5" component="div" noWrap textOverflow="ellipsis">
                         {props.username}

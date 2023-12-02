@@ -23,7 +23,6 @@ function MovieDashboard() {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
                 setDashboardInfo(data)
             })
             .catch((error) => {
