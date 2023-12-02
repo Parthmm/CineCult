@@ -1,12 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Dashboard from "./routes/Dashboard";
+import MovieDashboard from "./routes/MovieDashboard";
+import TVDashboard from "./routes/TVDashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
 import WatchListPage from "./routes/WatchListPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import './styles/App.css'; // Import your global styles
+import PasswordChangeForm from "./components/PasswordChangeForm";
 
 const router = createBrowserRouter([
   {
@@ -22,15 +24,23 @@ const router = createBrowserRouter([
     element: <><Register /></>
   },
   {
-    path: "/dashboard",
-    element: <><Navbar /><Dashboard /></>
+    path: "/dashboard-movies",
+    element: <><Navbar /><MovieDashboard /></>
+  },
+  {
+    path: "/dashboard-tvshows",
+    element: <><Navbar /><TVDashboard /></>
+  },
+  {
+    path: "changePassword",
+    element: <><PasswordChangeForm /></>
   },
   {
     path: "/movie/:movieId",
     element: <><Navbar /><MoviePage /></>
   },
   {
-    path: "/tv-show",
+    path: "/tvshow/:tvShowId",
     element: <><Navbar /><TVShowPage /></>
   },
   {

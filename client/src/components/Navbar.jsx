@@ -1,8 +1,7 @@
 import { Stack } from "@mui/material";
 import "../css/Navbar.css"
 import NavbarLink from "./NavbarLink";
-import { Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import Settings from "./Settings";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -19,12 +18,11 @@ function Navbar() {
     return (
         <div className="navbar">
             <Stack width="90%" marginLeft={2} spacing={4} direction="row">
-                <NavbarLink text="HOME" link="/dashboard" />
-                <NavbarLink text="WATCHLIST" link="/watchList" />
+                <NavbarLink text="Movies" link="/dashboard-movies" />
+                <NavbarLink text="TV Shows" link="/dashboard-tvshows" />
+                <NavbarLink text="Watchlist" link="/watchList" />
             </Stack>
-            <Box>
-                <button onClick={logout}>LOG OUT</button>
-            </Box>
+            <Settings />
         </div>
     )
 }

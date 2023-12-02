@@ -49,7 +49,7 @@ function Login(props) {
                     localStorage.setItem('username', name)
                     localStorage.setItem('authToken', data.token);
                     console.log("authtoken: " + data.token);
-                    navigate("/dashboard");
+                    navigate("/dashboard-movies");
                 }
             })
             .catch(error => {

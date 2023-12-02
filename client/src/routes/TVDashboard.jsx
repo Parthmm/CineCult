@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard";
 import TVShowCard from "../components/TVShowCard";
 import config from "../config.json";  // Import the config.json file 
 import styles from "../styles/Dashboard.module.css"
 
-function Dashboard() {
+function TVDashboard() {
 
     //state to hold movies and tv shows
     const [dashboardInfo, setDashboardInfo] = useState([])
@@ -12,7 +11,7 @@ function Dashboard() {
 
     //everytime we navigate to the webpage
     useEffect(() => {
-        fetch(`http://localhost:${config.PORT}/get_dashboard_info`, {
+        fetch(`http://localhost:${config.PORT}/get_tv_dashboard_info`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
             },
@@ -24,10 +23,11 @@ function Dashboard() {
                 return response.json();
             })
             .then((data) => {
+                console.log(data);
                 setDashboardInfo(data)
             })
             .catch((error) => {
-                console.error('Error fetching movies:', error);
+                console.error('Error fetching TV Shows:', error);
             });
 
     }, []);
@@ -35,12 +35,12 @@ function Dashboard() {
     return (
         <div className={styles.dashboard_background}>
             {
-                dashboardInfo.map((movie) => {
-                    return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
+                dashboardInfo.map((tvShow) => {
+                    return <TVShowCard key={tvShow.tv_id} name={tvShow.tv_name} seasons={tvShow.numberSeasons} episodes={tvShow.numberEpisodes} rating={tvShow.tv_rating} genre={tvShow.genre} language={tvShow.language} id={tvShow.tv_id} />
                 })
             }
         </div >
     )
 }
 
-export default Dashboard;
+export default TVDashboard;
