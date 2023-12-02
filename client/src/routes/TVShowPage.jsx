@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
+import Rating from '@mui/material/Rating'
 
 //styling 
 import styles from "../styles/Dashboard.module.css"
@@ -27,6 +28,9 @@ function TVShowPage() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+
+    //rating states
+    const [value, setValue] = useState(NaN);
 
     useEffect(() => {
         console.log(tvShowId)
@@ -90,10 +94,12 @@ function TVShowPage() {
                 username: localStorage.getItem("username"),
                 tv_id: tvShowId,
                 review: review,
+                rating: value,
+                reviewer: localStorage.getItem("isReviewer")
 
             })
         })
-        
+
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -164,7 +170,7 @@ function TVShowPage() {
 
 
                 {reviews.map((review) => {
-                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} deleteReview={deleteReview} ></Review>
+                    return <Review username={review.username} review={review.review} isUser={localStorage.getItem("username") == review.username} isReviewer={review.isReviewer} deleteReview={deleteReview} rating={review.rating} ></Review>
                 })}
             </div>
 
@@ -206,6 +212,15 @@ function TVShowPage() {
                         placeholder="Write your review here..."
                         rows="5"
                         cols="50"
+                    />
+
+                    <Typography component="legend">Give it a Rating</Typography>
+                    <Rating
+                        name="simple-controlled"
+                        value={value}
+                        onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}
                     />
 
                     <button className={formStyles.form_button} onClick={() => { handleSubmitReview(); handleClose(); }}>Submit Review</button>

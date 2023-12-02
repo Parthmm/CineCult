@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import styles from "../styles/Dashboard.module.css"
+import reviewstyles from "../styles/Review.module.css"
 
 
 function Review(props) {
@@ -13,6 +14,8 @@ function Review(props) {
     const cardStyle = {
         backgroundColor: props.isReviewer ? 'yellow' : 'inherit',
     };
+
+    console.log(props.isReviewer)
 
     return (
         <div className={styles.dashboard_card}>

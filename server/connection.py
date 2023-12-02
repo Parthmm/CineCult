@@ -240,7 +240,7 @@ def get_review(movie_id):
 def get_tv_review(tv_id): 
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT review, username FROM tv_reviews WHERE tv_id = (%s) ", (tv_id, ))
+    cursor.execute("SELECT review, username, rating, isReviewer FROM tv_reviews WHERE tv_id = (%s) ", (tv_id, ))
     reviews = cursor.fetchall() 
     print(reviews)
     cursor.close()
@@ -282,7 +282,7 @@ def add_tv_review(tv_id):
     cursor = conn.cursor()
     
     try:
-        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review) VALUES (%s,%s, %s)", (data['username'],data['tv_id'], data['review']))  # Corrected the SQL
+        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review, rating, isReviewer) VALUES (%s,%s, %s, %s, %s)", (data['username'],data['tv_id'], data['review'], data['rating'], data['reviewer']))  # Corrected the SQL
         conn.commit()
         response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
     except mysql.connector.Error as e:
