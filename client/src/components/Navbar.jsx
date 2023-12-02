@@ -4,16 +4,6 @@ import NavbarLink from "./NavbarLink";
 import Settings from "./Settings";
 
 function Navbar() {
-    const navigate = useNavigate();
-
-    const logout = () => {
-        // Clear the authentication token from localStorage
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('username');
-        localStorage.removeItem('isReviewer')
-        // Navigate to the login page or any other appropriate page
-        navigate("/");
-    };
 
     return (
         <div className="navbar">
