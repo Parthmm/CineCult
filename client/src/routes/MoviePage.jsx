@@ -34,12 +34,7 @@ function MoviePage() {
     const [value, setValue] = useState(NaN);
 
 
-    //get access to history to go to WatchList
     const navigate = useNavigate();
-    //function to navigate to the WatchList
-    const goToWatchList = () => {
-        navigate('/WatchList');
-    };
 
     useEffect(() => {
         //get the reviews 
@@ -205,7 +200,6 @@ function MoviePage() {
             )}
 
             <Button onClick={handleOpen}>Write a review</Button>
-            <Button onClick={goToWatchList}> Go To WatchList </Button>
             <Modal
                 className={formStyles.form_background}
                 open={open}

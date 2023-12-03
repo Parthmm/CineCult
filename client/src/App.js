@@ -4,7 +4,6 @@ import MovieDashboard from "./routes/MovieDashboard";
 import TVDashboard from "./routes/TVDashboard";
 import MoviePage from "./routes/MoviePage";
 import TVShowPage from "./routes/TVShowPage";
-import WatchListPage from "./routes/WatchListPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import UserStatistics from "./routes/UserStatistics"
@@ -49,10 +48,6 @@ const router = createBrowserRouter([
   {
     path: "/tvshow/:tvShowId",
     element: <><Navbar /><TVShowPage /></>
-  },
-  {
-    path: "/watchList",
-    element: <><Navbar /><WatchListPage /></>
   },
   {
     path: "/userStatistics/:userid",

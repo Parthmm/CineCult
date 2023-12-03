@@ -10,7 +10,6 @@ function Navbar() {
             <Stack width="90%" marginLeft={2} spacing={4} direction="row">
                 <NavbarLink text="Movies" link="/dashboard-movies" />
                 <NavbarLink text="TV Shows" link="/dashboard-tvshows" />
-                <NavbarLink text="Watchlist" link="/watchList" />
             </Stack>
             <Settings />
         </div>

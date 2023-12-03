@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import styles from "../styles/Dashboard.module.css"
-import reviewstyles from "../styles/Review.module.css"
 
 
 function Review(props) {
