@@ -84,7 +84,7 @@ function PasswordChangeForm() {
                 <br />
                 <label className="errorLabel">{error}</label>
                 <button className={styles.form_button} onClick={handleSubmit} > Submit </button>
-                <button className={styles.form_button} onClick={() => navigate("/dashboard")}>Cancel</button>
+                <button className={styles.form_button} onClick={() => navigate("/dashboard-movies")}>Cancel</button>
 
             </div>
 
