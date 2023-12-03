@@ -301,23 +301,6 @@ def get_tv_review(tv_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
-# Gets the reviews for a movie
-@app.route('/tvreviews/<tv_id>', methods=['GET']) 
-@jwt_required()
-def get_tv_review(tv_id): 
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT review, username FROM tv_reviews WHERE tv_id = (%s) ", (tv_id, ))
-    reviews = cursor.fetchall() 
-    print(reviews)
-    cursor.close()
-    conn.close()
-    response_data = {
-        'reviews': reviews
-    }
-    response = jsonify(response_data)
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
 
 # Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
@@ -340,26 +323,6 @@ def add_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response 
 
-# Adds a review for a movie 
-@app.route('/tvreviews/<tv_id>', methods=['POST'])
-def add_tv_review(tv_id): 
-    data = request.get_json()
-    
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review, rating, isReviewer) VALUES (%s,%s, %s, %s, %s)", (data['username'],data['tv_id'], data['review'], data['rating'], data['reviewer']))  # Corrected the SQL
-        conn.commit()
-        response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
-    except mysql.connector.Error as e:
-        response = jsonify({"error": str(e)})
-    finally:
-        cursor.close()
-        conn.close()
-    
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response 
 
 # Adds a review for a movie 
 @app.route('/tvreviews/<tv_id>', methods=['POST'])
