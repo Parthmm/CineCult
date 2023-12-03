@@ -7,6 +7,8 @@ import TVShowPage from "./routes/TVShowPage";
 import WatchListPage from "./routes/WatchListPage";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import UserStatistics from "./routes/UserStatistics"
+import CinecultStatistics from "./routes/CinecultStatistics";
 import './styles/App.css'; // Import your global styles
 import PasswordChangeForm from "./components/PasswordChangeForm";
 import ReviewerRegister from "./routes/ReviewerRegister";
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
   {
     path: "/watchList",
     element: <><Navbar /><WatchListPage /></>
+  },
+  {
+    path: "/userStatistics/:userid",
+    element: <><Navbar /><UserStatistics /></>
+  },
+  {
+    path: "/cinecultStatistics/:userid",
+    element: <><Navbar /><CinecultStatistics /></>
   }
 ]);
 

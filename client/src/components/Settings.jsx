@@ -19,6 +19,7 @@ function Settings() {
     // Clear the authentication token from localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('isReviewer');
     // Navigate to the login page or any other appropriate page
     navigate("/");
   };
@@ -27,10 +28,17 @@ function Settings() {
     navigate("/changePassword");
   }
 
+  const viewStatistics = () => {
+    navigate(`/userStatistics/${localStorage.getItem("username")} `);
+  }
+
+  const viewCinecultStatistics = () => {
+    navigate(`/cinecultStatistics/${localStorage.getItem("username")} `);
+  }
   const addReviewer = () => {
     navigate("/reviewer-register");
   }
-  
+
   let showMenuButton = localStorage.getItem("isReviewer") === '1';
 
   return (
@@ -55,7 +63,15 @@ function Settings() {
       >
         <MenuItem onClick={changePassword}>Change Password</MenuItem>
         {showMenuButton && <MenuItem onClick={addReviewer}>Register New Admin</MenuItem>}
+
+        <MenuItem onClick={viewStatistics}>View User Statistics</MenuItem>
+
+        {localStorage.getItem("isReviewer") == 1 && (
+          <MenuItem onClick={viewCinecultStatistics}>View Cinecult Statistics</MenuItem>
+        )}
+
         <MenuItem onClick={logout}>Logout</MenuItem>
+
       </Menu>
     </div>
   );

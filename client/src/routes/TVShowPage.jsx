@@ -194,7 +194,9 @@ function TVShowPage() {
             */}
             <br />
 
-
+            {localStorage.getItem("isReviewer") == 1 && (
+                <Button onClick={handleDeleteReview}>Delete all Reviews</Button>
+            )}
             <Button onClick={handleOpen}>Write a review</Button>
             <Modal
                 className={formStyles.form_background}
@@ -226,7 +228,7 @@ function TVShowPage() {
                     <button className={formStyles.form_button} onClick={() => { handleSubmitReview(); handleClose(); }}>Submit Review</button>
 
 
-                    <button className={formStyles.form_button} onClick={handleDeleteReview}>Delete all Reviews</button>
+
                 </div>
 
             </Modal >
