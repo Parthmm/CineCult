@@ -55,7 +55,7 @@ function Register() {
 
             <form className={styles.form_div} onSubmit={addUser}>
                 <div className={"titleContainer"}>
-                    <h2>Register</h2>
+                    <h2>User Registration</h2>
                 </div>
                 <br />
                 <div className={"inputContainer"}>

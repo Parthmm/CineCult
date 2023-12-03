@@ -97,7 +97,7 @@ function Login(props) {
 
                 {!props.reviewer && (
                     <>
-                        <button className={styles.form_button} onClick={() => navigate("/reviewer-login")}>Are you a reviewer?</button>
+                        <button className={styles.form_button} onClick={() => navigate("/reviewer-login")}>Are you an Administrator?</button>
                         <button className={styles.form_button} onClick={() => navigate("/register")}>Don't have an account?</button>
                     </>
                 )}

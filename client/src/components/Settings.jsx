@@ -61,14 +61,14 @@ function Settings() {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={changePassword}>Change Password</MenuItem>
-        {showMenuButton && <MenuItem onClick={addReviewer}>Register New Admin</MenuItem>}
 
         <MenuItem onClick={viewStatistics}>View User Statistics</MenuItem>
 
-        {localStorage.getItem("isReviewer") == 1 && (
+        {localStorage.getItem("isReviewer") === 1 && (
           <MenuItem onClick={viewCinecultStatistics}>View Cinecult Statistics</MenuItem>
-        )}
+          )}
+        {showMenuButton && <MenuItem onClick={addReviewer}>Register New Admin</MenuItem>}
+        <MenuItem onClick={changePassword}>Change Password</MenuItem>
 
         <MenuItem onClick={logout}>Logout</MenuItem>
 
