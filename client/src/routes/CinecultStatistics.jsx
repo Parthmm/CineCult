@@ -177,7 +177,7 @@ function CinecultStatistics() {
                         data: movieReview.map(reviews => reviews[1]).concat(tvShowReview.map(reviews => reviews[1])),
                     },
                 ]}
-                width={1000}
+                width={1500}
                 height={300}
             />
 
