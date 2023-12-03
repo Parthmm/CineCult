@@ -20,7 +20,7 @@ function MoviePage() {
     const { movieId } = useParams();
     //gets the shit from the location can't get it from params. Fixes case where there no review and the Reviews for doesn't show up
     const { state } = useLocation();
-    const { id, name } = state;
+    const { name } = state;
 
         // Use useNavigate instead of useHistory
         const navigate = useNavigate();

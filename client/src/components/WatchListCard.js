@@ -27,7 +27,7 @@ function WatchListCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={() => navigate(`/Movie/${props.id}`, { state: { key: props.id, name: props.name } })}>View Reviews</Button>
+                <Button size="small" onClick={() => navigate(`/Watchlist/${props.id}`, { state: { key: props.id, name: props.name } })}>View Reviews</Button>
             </CardActions>
         </Card>
     );
