@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import config from "../config.json";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from "../styles/Form.module.css"
 
-function Register() {
-
+function ReviewerRegister() {
+    const navigate = useNavigate();
+    const authToken = localStorage.getItem('authToken');
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")
-    const [email, setEmail] = useState("")
-    const [error, setError] = useState("")
     const [username, setUsername] = useState("")
+    const [error, setError] = useState("")
 
     const addUser = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:${config.PORT}/adduser`, {
+        fetch(`http://localhost:${config.PORT}/reviewer-register`, {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 user_id: uuidv4(),
                 name: name,
                 password: password,
-                email: email,
                 username: username
             }),
         })
@@ -38,7 +39,7 @@ function Register() {
                 if (data.error) {
                     setError("Error Registering. Try again.");
                 } else {
-                    setError("Congrats on creating an account. Please go the the login page.");
+                    setError("New Administrator successfully created!");
                 }
             })
             .catch(error => {
@@ -55,7 +56,7 @@ function Register() {
 
             <form className={styles.form_div} onSubmit={addUser}>
                 <div className={"titleContainer"}>
-                    <h2>Register</h2>
+                    <h2>Register New Administrator</h2>
                 </div>
                 <br />
                 <div className={"inputContainer"}>
@@ -89,17 +90,6 @@ function Register() {
                     <label className="errorLabel">{ }</label>
                 </div>
                 <br />
-                <div className={"inputContainer"}>
-                    <input
-                        type="email"
-                        onChange={(e) => {
-                            setEmail(e.target.value)
-                        }}
-                        placeholder="Enter email address here"
-                        className={styles.input_box} />
-
-                </div>
-                <br />
 
                 <button className={styles.form_button} type="submit">Register</button>
 
@@ -110,4 +100,4 @@ function Register() {
     )
 }
 
-export default Register;
+export default ReviewerRegister;

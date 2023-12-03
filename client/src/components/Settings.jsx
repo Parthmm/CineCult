@@ -27,6 +27,12 @@ function Settings() {
     navigate("/changePassword");
   }
 
+  const addReviewer = () => {
+    navigate("/reviewer-register");
+  }
+  
+  let showMenuButton = localStorage.getItem("isReviewer") === '1';
+
   return (
     <div>
       <button
@@ -48,6 +54,7 @@ function Settings() {
         }}
       >
         <MenuItem onClick={changePassword}>Change Password</MenuItem>
+        {showMenuButton && <MenuItem onClick={addReviewer}>Register New Admin</MenuItem>}
         <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </div>

@@ -143,7 +143,8 @@ def add():
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     return response 
 
-@app.route('/addreviewer', methods=['POST'])
+@app.route('/reviewer-register', methods=['POST'])
+@jwt_required()
 def add_reviewer():
     data = request.get_json()
     conn = mysql.connector.connect(**config)
@@ -159,7 +160,7 @@ def add_reviewer():
         return "Username already exists", 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    cursor.execute("INSERT INTO reviewer (user_id, username, password, name) VALUES (%s, %s, %s, %s, %s)", (data['user_id'], data['username'], hashed_password, data['name']))
+    cursor.execute("INSERT INTO reviewer (user_id, password, username, name) VALUES (%s, %s, %s, %s)", (data['user_id'], hashed_password, data['username'], data['name']))
     conn.commit()
     cursor.close()
     conn.close()
