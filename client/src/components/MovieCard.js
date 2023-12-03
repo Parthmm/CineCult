@@ -10,9 +10,23 @@ import styles from "../styles/Dashboard.module.css"
 function MovieCard(props) {
     const navigate = useNavigate();
 
+    const imageStyles = {
+        width: '100%',
+        height: 'auto', 
+        objectFit: 'cover', 
+        objectPosition: 'center' 
+    };
+
     return (
-        <Card className={styles.dashboard_card} variant="outlined" style={{ width: '250px', height: '200px' }}>
+        <Card className={styles.dashboard_card} variant="outlined" style={{ width: '250px', minHeight: '350px' }}>
             <CardContent>
+                <div style={{ height: '375px', overflow: 'hidden' }}> {}
+                    <img 
+                        style={imageStyles}
+                        src={`http://localhost:3000/${props.poster}`} 
+                        alt={`${props.name} Poster`} 
+                    />
+                </div>
                 <Typography variant="h5" component="div" noWrap textOverflow="ellipsis">
                     {props.name}
                 </Typography>
@@ -27,7 +41,7 @@ function MovieCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={() => navigate(`/movie/${props.id}`, { state: { key: props.id, name: props.name } })}>View Reviews</Button>
+                <Button size="small" onClick={() => navigate(`/movie/${props.id}`, { state: { id: props.id, name: props.name } })}>View Reviews</Button>
             </CardActions>
         </Card>
     );

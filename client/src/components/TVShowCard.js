@@ -10,18 +10,17 @@ import config from '../config.json';
 function TVShowCard(props) {
     const navigate = useNavigate();
 
-    // Adjust the styles for the image
     const imageStyles = {
-        width: '100%', // Make image take full width of the card
-        height: 'auto', // Adjust height automatically
-        objectFit: 'cover', // Cover the area without stretching the image
-        objectPosition: 'center' // Center the image within the element
+        width: '100%', 
+        height: 'auto',
+        objectFit: 'cover',
+        objectPosition: 'center'
     };
 
     return (
         <Card variant="outlined" style={{ width: '250px', minHeight: '350px' }}>
             <CardContent>
-                <div style={{ height: '300px', overflow: 'hidden' }}> {/* Container to control the image size */}
+                <div style={{ height: '375px', overflow: 'hidden' }}> {}
                     <img 
                         style={imageStyles}
                         src={`http://localhost:3000/${props.poster}`} 

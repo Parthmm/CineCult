@@ -39,6 +39,7 @@ def get_movie_dashboard_info():
                     m.name AS movie_name, 
                     m.avg_rating as movie_rating, 
                     m.movie_id as movie_id,
+                    m.poster as poster,
                     g.Name AS genre,
                     a.Name AS actor_name,
                     d.Name AS director_name,
