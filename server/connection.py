@@ -259,19 +259,28 @@ def add_review(movie_id):
     
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()
-    
+
     try:
-        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating, isReviewer) VALUES (%s,%s, %s, %s, %s)", (data['username'],data['movieId'], data['review'], data['rating'], data['reviewer']))  # Corrected the SQL
+        cursor.execute("INSERT INTO movie_reviews (username, movie_id, review, rating, isReviewer) VALUES (%s, %s, %s, %s, %s)", (data['username'], data['movieId'], data['review'], data['rating'], data['reviewer']))
+
+        # Calculate the new average rating for the movie
+        cursor.execute("SELECT AVG(rating) FROM movie_reviews WHERE movie_id = %s", (data['movieId'],))
+        new_avg_rating = cursor.fetchone()[0]
+
+        # Update the average rating in the movie table
+        cursor.execute("UPDATE movie SET avg_rating = %s WHERE movie_id = %s", (new_avg_rating, data['movieId']))
+        
         conn.commit()
-        response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
+        response = jsonify({"message": "Review added successfully!"})
     except mysql.connector.Error as e:
         response = jsonify({"error": str(e)})
     finally:
         cursor.close()
         conn.close()
-    
+
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response 
+    return response
+    
 
 # Adds a review for a movie 
 @app.route('/tvreviews/<tv_id>', methods=['POST'])
@@ -280,19 +289,26 @@ def add_tv_review(tv_id):
     
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()
-    
+
     try:
-        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review, rating, isReviewer) VALUES (%s,%s, %s, %s, %s)", (data['username'],data['tv_id'], data['review'], data['rating'], data['reviewer']))  # Corrected the SQL
+        cursor.execute("INSERT INTO tv_reviews (username, tv_id, review, rating, isReviewer) VALUES (%s, %s, %s, %s, %s)", (data['username'], data['tv_id'], data['review'], data['rating'], data['reviewer']))
+
+       
+        cursor.execute("SELECT AVG(rating) FROM tv_reviews WHERE tv_id = %s", (data['tv_id'],))
+        new_avg_rating = cursor.fetchone()[0]
+
+        cursor.execute("UPDATE tv_show SET avg_rating = %s WHERE tv_id = %s", (new_avg_rating, data['tv_id']))
+        
         conn.commit()
-        response = jsonify({"message": "Review added successfully!"})  # Modified the response for consistency
+        response = jsonify({"message": "Review added successfully!"})
     except mysql.connector.Error as e:
         response = jsonify({"error": str(e)})
     finally:
         cursor.close()
         conn.close()
-    
+
     response.headers['Access-Control-Allow-Origin'] = '*'
-    return response 
+    return response
 
 # Edit movie review
 @app.route('/reviews/<movie_id>', methods=['PUT'])
@@ -325,18 +341,22 @@ def delete_single_review(movie_id,username):
     cursor = conn.cursor()
     
     try:
-        cursor.execute("DELETE FROM movie_reviews WHERE movie_id = %s and username = %s", (movie_id,username))
+        cursor.execute("DELETE FROM movie_reviews WHERE movie_id = %s and username = %s", (movie_id, username))
         conn.commit()
         if cursor.rowcount == 0:
             response = jsonify({"error": "Review not found for the given movie_id."})
         else:
             response = jsonify({"message": "Review deleted successfully!"})
+            cursor.execute("SELECT AVG(rating) FROM movie_reviews WHERE movie_id = %s", (movie_id,))
+            new_avg_rating = cursor.fetchone()[0]
+            cursor.execute("UPDATE movie SET avg_rating = %s WHERE movie_id = %s", (new_avg_rating, movie_id))
+            conn.commit()
     except mysql.connector.Error as e:
         response = jsonify({"error": str(e)})
     finally:
         cursor.close()
         conn.close()
-    
+
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
@@ -352,7 +372,11 @@ def delete_tv_single_review(tv_id,username):
         if cursor.rowcount == 0:
             response = jsonify({"error": "Review not found for the given tv_id."})
         else:
-            response = jsonify({"message": "Review deleted successfully!"})
+            response = jsonify({"message": "Review deleted successfully!"}) 
+            cursor.execute("SELECT AVG(rating) FROM tv_reviews WHERE tv_id = %s", (tv_id,))
+            new_avg_rating = cursor.fetchone()[0]
+            cursor.execute("UPDATE tv_show SET avg_rating = %s WHERE tv_id = %s", (new_avg_rating, tv_id))
+            conn.commit()
     except mysql.connector.Error as e:
         response = jsonify({"error": str(e)})
     finally:
@@ -574,6 +598,94 @@ def getTVReviewsPercentage():
     response.headers['Access-Control-Allow-Origin'] = '*'
 
     return response  
+
+@app.route('/reviewspershow', methods=['GET']) 
+def getReviewsPerShow(): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 
+            ts.name,
+            COUNT(*) AS review_count
+        FROM
+            tv_reviews tr
+        JOIN
+            tv_show ts ON tr.tv_id = ts.tv_id
+        GROUP BY
+            ts.tv_id, ts.name;
+
+        """ )    
+    
+     # Fetch the result
+    result = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*' 
+    
+    return response 
+
+@app.route('/reviewspermovie', methods=['GET']) 
+def getReviewsPerMovie(): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 
+            m.name,
+            COUNT(*) AS review_count
+        FROM
+            movie_reviews mr
+        JOIN
+            movie m ON mr.movie_id = m.movie_id
+        GROUP BY
+            m.movie_id, m.name;
+
+        """ )    
+    
+     # Fetch the result
+    result = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*' 
+    
+    return response   
+
+@app.route('/numusers', methods=['GET']) 
+def getNumUsers(): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 
+            COUNT(*)
+        FROM
+            users
+
+        """ )    
+    
+     # Fetch the result
+    result = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*' 
+    
+    return response 
 
 
 if __name__ == '__main__':

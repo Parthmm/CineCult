@@ -14,14 +14,45 @@ function CinecultStatistics() {
 
     const [moviePercentage, setMoviePercentage] = useState("")
     const [tvPercentage, setTVPercentage] = useState("")
+    const [tvShowReview, setTvShowReview] = useState([[]])
+    const [movieReview, setMovieReview] = useState([[]])
+    const [numUsers, setNumUsers] = useState(0)
 
     useEffect(() => {
         //get user statistics
         fetchMoviePercentages();
         fetchTVPercentages();
+        fetchReviewsPerShow();
+        fetchReviewsPerMovie();
+        fetchNumUsers();
 
 
     }, [authToken]);
+
+    const fetchNumUsers = () => {
+
+        fetch(`http://localhost:${config.PORT}/numusers`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network broken yeet");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data)
+                setNumUsers(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
+            });
+
+
+
+    }
 
     //get the top movie
     const fetchMoviePercentages = () => {
@@ -74,6 +105,49 @@ function CinecultStatistics() {
 
     }
 
+    const fetchReviewsPerShow = () => {
+        fetch(`http://localhost:${config.PORT}/reviewspershow`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network broken yeet");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data)
+                setTvShowReview(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
+            });
+    }
+
+    const fetchReviewsPerMovie = () => {
+        fetch(`http://localhost:${config.PORT}/reviewspermovie`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network broken yeet");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data)
+                setMovieReview(data)
+
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
+            });
+    }
+
 
 
 
@@ -85,6 +159,28 @@ function CinecultStatistics() {
         <div className={styles.form_background}>
 
             <h1>Cinecult Statistics</h1>
+
+            <h2>Cinecult has <span style={{ color: "red" }}>{numUsers}</span> users</h2>
+
+            <h2>Reviews per Movie/TV Show</h2>
+
+            <BarChart
+                xAxis={[
+                    {
+                        id: 'barCategories',
+                        data: movieReview.map(reviews => reviews[0]).concat(tvShowReview.map(reviews => reviews[0])),
+                        scaleType: 'band',
+                    },
+                ]}
+                series={[
+                    {
+                        data: movieReview.map(reviews => reviews[1]).concat(tvShowReview.map(reviews => reviews[1])),
+                    },
+                ]}
+                width={1000}
+                height={300}
+            />
+
 
             <h2>Positive vs Negative Movie Reviews</h2>
 
@@ -124,11 +220,6 @@ function CinecultStatistics() {
                 width={500}
                 height={300}
             />
-
-
-            <h2>The movie with the most reviews is</h2>
-
-            <h2>The tv show with the most reviews is</h2>
 
             <button onClick={() => { (navigate("/dashboard-movies")) }}>Back to dashboard</button>
 
