@@ -27,6 +27,10 @@ function Settings() {
     navigate("/changePassword");
   }
 
+  const viewSettings = () => {
+    navigate(`/userStatistics/${localStorage.getItem("username")} `);
+  }
+
   return (
     <div>
       <button
@@ -49,6 +53,8 @@ function Settings() {
       >
         <MenuItem onClick={changePassword}>Change Password</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
+        <MenuItem onClick={viewSettings}>View User Statistics</MenuItem>
+
       </Menu>
     </div>
   );

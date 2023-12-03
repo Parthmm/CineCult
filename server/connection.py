@@ -410,6 +410,120 @@ def delete_tv_review(tv_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+#get users top movies
+@app.route('/userstatisticsmovie/<username>', methods=["GET"]) 
+def getuserstatsmovie(username):  
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor() 
+
+
+
+    cursor.execute("""SELECT
+                        mr.username,
+                        m.name AS movie_name,
+                        mr.rating AS highest_rating
+                    FROM
+                        movie_reviews mr
+                    JOIN
+                        movie m ON mr.movie_id = m.movie_id
+                    WHERE
+                        mr.username = %s
+                    ORDER BY
+                        mr.rating DESC
+                    """, (username,) )
+
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    response = jsonify(movies)
+          
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response 
+
+#get users top shows
+@app.route('/userstatisticsshow/<username>', methods=["GET"]) 
+def getuserstatsshow(username):   
+    print("Received username:", username)
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor() 
+
+
+
+    cursor.execute("""SELECT
+                        tr.username,
+                        t.name AS tv_name,
+                        tr.rating AS highest_rating
+                    FROM
+                        tv_reviews tr
+                    JOIN
+                        tv_show t ON tr.tv_id = t.tv_id
+                    WHERE
+                        tr.username =  %s
+                    ORDER BY
+                        tr.rating DESC
+                    """, (username,) )
+
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    response = jsonify(movies)
+          
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response 
+
+@app.route('/userstatisticsnum/<username>', methods=["GET"]) 
+def getuserstatsreviews(username): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute(f"""
+        SELECT
+            COUNT(*) AS review_count
+        FROM
+            movie_reviews
+        WHERE
+            username = %s
+    """, (username,))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response 
+
+@app.route('/userstatisticsnumshows/<username>', methods=["GET"]) 
+def getuserstatsreviewsshows(username): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute(f"""
+        SELECT
+            COUNT(*) AS review_count
+        FROM
+            tv_reviews
+        WHERE
+            username = %s
+    """, (username,))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response
 
 
 if __name__ == '__main__':
