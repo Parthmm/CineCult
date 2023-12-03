@@ -19,6 +19,7 @@ function Settings() {
     // Clear the authentication token from localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('isReviewer');
     // Navigate to the login page or any other appropriate page
     navigate("/");
   };
@@ -27,8 +28,12 @@ function Settings() {
     navigate("/changePassword");
   }
 
-  const viewSettings = () => {
+  const viewStatistics = () => {
     navigate(`/userStatistics/${localStorage.getItem("username")} `);
+  }
+
+  const viewCinecultStatistics = () => {
+    navigate(`/cinecultStatistics/${localStorage.getItem("username")} `);
   }
 
   return (
@@ -53,7 +58,11 @@ function Settings() {
       >
         <MenuItem onClick={changePassword}>Change Password</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
-        <MenuItem onClick={viewSettings}>View User Statistics</MenuItem>
+        <MenuItem onClick={viewStatistics}>View User Statistics</MenuItem>
+
+        {localStorage.getItem("isReviewer") == 1 && (
+          <MenuItem onClick={viewCinecultStatistics}>View Cinecult Statistics</MenuItem>
+        )}
 
       </Menu>
     </div>

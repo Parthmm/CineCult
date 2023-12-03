@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from "../styles/Form.module.css"
 
-function UserStatistics() {
+function CinecultStatistics() {
     const navigate = useNavigate();
 
     const name = localStorage.getItem("username")
@@ -129,15 +129,21 @@ function UserStatistics() {
     return (
         <div className={styles.form_background}>
 
-            <h1>Here are some cool statistics for you, {name}! </h1>
+            <h1>Cinecult Statistics</h1>
 
-            <h2>Your favorite movie was  <span style={{ color: "red" }}>{topMovies[0][1]} </span>  you gave it a rating of  <span style={{ color: "red" }}>{topMovies[0][2]} </span></h2>
+            <h2>Cinecult has x amount of users</h2>
 
-            <h2>Your favorite tv show was <span style={{ color: "red" }}> {topShows[0][1]} </span>, you gave it a rating of  <span style={{ color: "red" }}></span>{topShows[0][2]}</h2>
+            <h2>The percentage of postive movie reviews is</h2>
 
-            <h2>Here is how many reviews for movies you wrote : <span style={{ color: "red" }}>{numMovieReviews}</span></h2>
+            <h2>The percentage of negative movie reviews is</h2>
 
-            <h2>Here is how many reviews for tv shows you wrote:  <span style={{ color: "red" }}>{numTVReviews}</span></h2>
+            <h2>The percentage of postive tv reviews is</h2>
+
+            <h2>The percentage of negative tv reviews is</h2>
+
+            <h2>The movie with the most reviews is</h2>
+
+            <h2>The tv show with the most reviews is</h2>
 
             <button onClick={() => { (navigate("/dashboard-movies")) }}>Back to dashboard</button>
 
@@ -146,4 +152,4 @@ function UserStatistics() {
 }
 
 
-export default UserStatistics;
+export default CinecultStatistics;
