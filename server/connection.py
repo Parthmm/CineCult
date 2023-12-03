@@ -74,6 +74,7 @@ def get_tv_dashboard_info():
                     t.tv_id as tv_id,
                     t.numberSeasons as numberSeasons,
                     t.numberEpisodes as numberEpisodes,
+                    t.poster as poster,
                     g.Name AS genre,
                     a.Name AS actor_name,
                     d.Name AS director_name,
