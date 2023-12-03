@@ -45,7 +45,7 @@ function WatchListPage() {
                 console.error('Error fetching movies:', error);
             });
 
-    }, []);
+    }, );
 
     return (
         <div className={styles.dashboard_background}>

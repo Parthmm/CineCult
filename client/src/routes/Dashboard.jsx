@@ -31,7 +31,7 @@ function Dashboard() {
                 console.error('Error fetching movies:', error);
             });
 
-    }, []);
+    }, );
 
     return (
         <div className={styles.dashboard_background}>
