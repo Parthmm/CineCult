@@ -64,7 +64,7 @@ function Settings() {
 
         <MenuItem onClick={viewStatistics}>View User Statistics</MenuItem>
 
-        {localStorage.getItem("isReviewer") === 1 && (
+        {localStorage.getItem("isReviewer") === '1' && (
           <MenuItem onClick={viewCinecultStatistics}>View Cinecult Statistics</MenuItem>
           )}
         {showMenuButton && <MenuItem onClick={addReviewer}>Register New Admin</MenuItem>}
