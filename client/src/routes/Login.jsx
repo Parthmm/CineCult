@@ -16,7 +16,7 @@ function Login(props) {
 
         //sets local storage and the correct post
         let login = ""
-        if (props.reviewer == true) {
+        if (props.reviewer === true) {
             login = "loginreviewer"
             localStorage.setItem('isReviewer', 1)
         }
@@ -66,7 +66,7 @@ function Login(props) {
             <div className={styles.form_div}>
 
                 <div className={"titleContainer"}>
-                    <h2>Login</h2>
+                    <h2>{props.reviewer ? "Admin Login" : "User Login"}</h2>
                 </div>
                 <br />
                 <div className={"inputContainer"}>

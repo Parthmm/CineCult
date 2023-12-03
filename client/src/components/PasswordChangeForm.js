@@ -11,7 +11,14 @@ function PasswordChangeForm() {
     const authToken = localStorage.getItem('authToken');
 
     const handleSubmit = () => {
-        fetch(`http://localhost:${config.PORT}/change_password`, {
+        let changePassword = "";
+        if (localStorage.getItem('isReviewer', 1)) {
+            changePassword = "change_password_reviewer";
+        }
+        else {
+            changePassword = "change_password";
+        };
+        fetch(`http://localhost:${config.PORT}/${changePassword}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${authToken}`,
