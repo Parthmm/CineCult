@@ -51,11 +51,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/userStatistics/:userid",
-    element: <><UserStatistics /></>
+    element: <><Navbar /><UserStatistics /></>
   },
   {
     path: "/cinecultStatistics/:userid",
-    element: <><CinecultStatistics /></>
+    element: <><Navbar /><CinecultStatistics /></>
   }
 ]);
 

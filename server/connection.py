@@ -523,7 +523,57 @@ def getuserstatsreviewsshows(username):
     response = jsonify(result)
     response.headers['Access-Control-Allow-Origin'] = '*'
 
-    return response
+    return response 
+
+#get percentage of movie reviews
+@app.route('/percentageMovieReviews', methods=['GET']) 
+def getMovieReviewsPercentage(): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            (COUNT(CASE WHEN rating > 3 THEN 1 END) / COUNT(*)) * 100 AS positive_percentage
+        FROM
+            movie_reviews;
+        """ )  
+    
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response  
+@app.route('/percentageTVReviews', methods=['GET']) 
+def getTVReviewsPercentage(): 
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            (COUNT(CASE WHEN rating > 3 THEN 1 END) / COUNT(*)) * 100 AS positive_percentage
+        FROM
+            tv_reviews;
+        """ )  
+    
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    # Convert the result to a dictionary
+    response = jsonify(result)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response  
 
 
 if __name__ == '__main__':

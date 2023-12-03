@@ -3,34 +3,30 @@ import { useLocation } from 'react-router-dom';
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+import { BarChart } from "@mui/x-charts"
 
 import styles from "../styles/Form.module.css"
 
 function CinecultStatistics() {
     const navigate = useNavigate();
 
-    const name = localStorage.getItem("username")
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage.getItem("authToken")
 
-    const [topMovies, setTopMovies] = useState([[]])
-    const [topShows, setTopShows] = useState([[]])
-    const [numMovieReviews, setMovieReviews] = useState(0)
-    const [numTVReviews, setTVReviews] = useState(0)
+    const [moviePercentage, setMoviePercentage] = useState("")
+    const [tvPercentage, setTVPercentage] = useState("")
 
     useEffect(() => {
         //get user statistics
-        fetchTopMovie();
-        fetchTopShow();
-        fetchNumReviews();
-        fetchTVNumReviews();
+        fetchMoviePercentages();
+        fetchTVPercentages();
 
 
     }, [authToken]);
 
     //get the top movie
-    const fetchTopMovie = () => {
+    const fetchMoviePercentages = () => {
 
-        fetch(`http://localhost:${config.PORT}/userstatisticsmovie/${localStorage.getItem("username")}`, {
+        fetch(`http://localhost:${config.PORT}/percentageMovieReviews`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
             },
@@ -43,7 +39,7 @@ function CinecultStatistics() {
             })
             .then((data) => {
                 console.log(data)
-                setTopMovies(data)
+                setMoviePercentage(data)
             })
             .catch((error) => {
                 console.error('Error fetching reviews:', error);
@@ -53,10 +49,9 @@ function CinecultStatistics() {
 
     }
 
-    //get the top tv show
-    const fetchTopShow = () => {
+    const fetchTVPercentages = () => {
 
-        fetch(`http://localhost:${config.PORT}/userstatisticsshow/${localStorage.getItem("username")}`, {
+        fetch(`http://localhost:${config.PORT}/percentageTVReviews`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
             },
@@ -69,59 +64,19 @@ function CinecultStatistics() {
             })
             .then((data) => {
                 console.log(data)
-                setTopShows(data)
+                setTVPercentage(data)
             })
             .catch((error) => {
                 console.error('Error fetching reviews:', error);
             });
 
-    }
 
-    const fetchNumReviews = () => {
-        fetch(`http://localhost:${config.PORT}/userstatisticsnum/${localStorage.getItem("username")}`, {
-            headers: {
-                'Authorization': `Bearer ${authToken}`,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network broken yeet");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data)
-                setMovieReviews(data)
-
-            })
-            .catch((error) => {
-                console.error('Error fetching reviews:', error);
-            });
 
     }
 
-    const fetchTVNumReviews = () => {
-        fetch(`http://localhost:${config.PORT}/userstatisticsnumshows/${localStorage.getItem("username")}`, {
-            headers: {
-                'Authorization': `Bearer ${authToken}`,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network broken yeet");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data)
-                setTVReviews(data)
 
-            })
-            .catch((error) => {
-                console.error('Error fetching reviews:', error);
-            });
 
-    }
+
 
 
 
@@ -131,15 +86,45 @@ function CinecultStatistics() {
 
             <h1>Cinecult Statistics</h1>
 
-            <h2>Cinecult has x amount of users</h2>
+            <h2>Positive vs Negative Movie Reviews</h2>
 
-            <h2>The percentage of postive movie reviews is</h2>
+            <BarChart
+                xAxis={[
+                    {
+                        id: 'barCategories',
+                        data: ['positive reviews', 'negative reviews'],
+                        scaleType: 'band',
+                    },
+                ]}
+                series={[
+                    {
+                        data: [parseInt(moviePercentage), 100 - parseInt(moviePercentage)],
+                    },
+                ]}
+                width={500}
+                height={300}
+            />
 
-            <h2>The percentage of negative movie reviews is</h2>
 
-            <h2>The percentage of postive tv reviews is</h2>
+            <h2>Positive vs Negative TV Reviews</h2>
 
-            <h2>The percentage of negative tv reviews is</h2>
+            <BarChart
+                xAxis={[
+                    {
+                        id: 'barCategories',
+                        data: ['positive reviews', 'negative reviews'],
+                        scaleType: 'band',
+                    },
+                ]}
+                series={[
+                    {
+                        data: [parseInt(tvPercentage), 100 - parseInt(tvPercentage)],
+                    },
+                ]}
+                width={500}
+                height={300}
+            />
+
 
             <h2>The movie with the most reviews is</h2>
 
