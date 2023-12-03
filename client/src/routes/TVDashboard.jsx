@@ -36,7 +36,7 @@ function TVDashboard() {
         <div className={styles.dashboard_background}>
             {
                 dashboardInfo.map((tvShow) => {
-                    return <TVShowCard key={tvShow.tv_id} name={tvShow.tv_name} seasons={tvShow.numberSeasons} episodes={tvShow.numberEpisodes} rating={tvShow.tv_rating} genre={tvShow.genre} language={tvShow.language} id={tvShow.tv_id} />
+                    return <TVShowCard key={tvShow.tv_id} name={tvShow.tv_name} seasons={tvShow.numberSeasons} episodes={tvShow.numberEpisodes} rating={tvShow.tv_rating} genre={tvShow.genre} language={tvShow.language} id={tvShow.tv_id} poster={tvShow.poster} />
                 })
             }
         </div >

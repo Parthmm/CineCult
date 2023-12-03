@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import config from "../config.json";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from "../styles/Form.module.css"
 
 function Register() {
-    const navigate = useNavigate();
 
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")

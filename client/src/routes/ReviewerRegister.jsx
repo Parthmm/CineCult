@@ -1,37 +1,31 @@
 import React, { useState } from 'react';
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
-//styling 
 import styles from "../styles/Form.module.css"
 
-function Login(props) {
+function ReviewerRegister() {
     const navigate = useNavigate();
-
-    const [name, setUsername] = useState("")
+    const authToken = localStorage.getItem('authToken');
+    const [name, setName] = useState("")
     const [password, setPassword] = useState("")
+    const [username, setUsername] = useState("")
     const [error, setError] = useState("")
 
-    const login = () => {
-
-        //sets local storage and the correct post
-        let login = ""
-        if (props.reviewer === true) {
-            login = "loginreviewer"
-            localStorage.setItem('isReviewer', 1)
-        }
-        else {
-            login = "login"
-            localStorage.setItem('isReviewer', 0)
-        }
-        fetch(`http://localhost:${config.PORT}/${login}`, {
+    const addUser = (e) => {
+        e.preventDefault();
+        fetch(`http://localhost:${config.PORT}/reviewer-register`, {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                user_id: uuidv4(),
                 name: name,
                 password: password,
+                username: username
             }),
         })
             .then(response => {
@@ -43,18 +37,14 @@ function Login(props) {
             .then(data => {
 
                 if (data.error) {
-                    setError("Username or password try again");
+                    setError("Error Registering. Try again.");
                 } else {
-                    // set username in local storage 
-                    localStorage.setItem('username', name)
-                    localStorage.setItem('authToken', data.token);
-                    console.log("authtoken: " + data.token);
-                    navigate("/dashboard-movies");
+                    setError("New Administrator successfully created!");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                setError("Username or password is wrong try again");
+                setError("Username already exists try again");
             });
     }
 
@@ -63,10 +53,20 @@ function Login(props) {
 
             <h1>Cinecult</h1>
 
-            <div className={styles.form_div}>
 
+            <form className={styles.form_div} onSubmit={addUser}>
                 <div className={"titleContainer"}>
-                    <h2>{props.reviewer ? "Admin Login" : "User Login"}</h2>
+                    <h2>Register New Administrator</h2>
+                </div>
+                <br />
+                <div className={"inputContainer"}>
+                    <input
+                        onChange={(e) => {
+                            setName(e.target.value)
+                        }}
+                        placeholder="Enter full name here"
+                        className={styles.input_box} />
+                    <label className="errorLabel">{ }</label>
                 </div>
                 <br />
                 <div className={"inputContainer"}>
@@ -74,39 +74,30 @@ function Login(props) {
                         onChange={(e) => {
                             setUsername(e.target.value)
                         }}
-                        placeholder="Enter your username here"
+                        placeholder="Enter username here"
                         className={styles.input_box} />
                     <label className="errorLabel">{ }</label>
                 </div>
                 <br />
                 <div className={"inputContainer"}>
                     <input
-
                         type="password"
                         onChange={(e) => {
                             setPassword(e.target.value)
                         }}
-                        placeholder="Enter your password here"
+                        placeholder="Enter password here"
                         className={styles.input_box} />
-
+                    <label className="errorLabel">{ }</label>
                 </div>
                 <br />
+
+                <button className={styles.form_button} type="submit">Register</button>
+
                 <label className="errorLabel">{error}</label>
 
-                <button className={styles.form_button} onClick={login} > Login </button>
-
-                {!props.reviewer && (
-                    <>
-                        <button className={styles.form_button} onClick={() => navigate("/reviewer-login")}>Are you a reviewer?</button>
-                        <button className={styles.form_button} onClick={() => navigate("/register")}>Don't have an account?</button>
-                    </>
-                )}
-
-            </div>
-
-        </div >
+            </form>
+        </div>
     )
 }
 
-
-export default Login;
+export default ReviewerRegister;

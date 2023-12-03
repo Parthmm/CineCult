@@ -39,6 +39,7 @@ def get_movie_dashboard_info():
                     m.name AS movie_name, 
                     m.avg_rating as movie_rating, 
                     m.movie_id as movie_id,
+                    m.poster as poster,
                     g.Name AS genre,
                     a.Name AS actor_name,
                     d.Name AS director_name,
@@ -74,6 +75,7 @@ def get_tv_dashboard_info():
                     t.tv_id as tv_id,
                     t.numberSeasons as numberSeasons,
                     t.numberEpisodes as numberEpisodes,
+                    t.poster as poster,
                     g.Name AS genre,
                     a.Name AS actor_name,
                     d.Name AS director_name,
@@ -117,7 +119,7 @@ def add():
     conn = mysql.connector.connect(**config)
     cursor = conn.cursor()  
 
-    cursor.execute("SELECT * FROM users WHERE name = %s", (data['name'],))
+    cursor.execute("SELECT * FROM users WHERE username = %s", (data['username'],))
     user = cursor.fetchone()
     
     if user:
@@ -136,6 +138,31 @@ def add():
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     cursor.execute("INSERT INTO users (user_id, name, password, email_address, username) VALUES (%s, %s, %s, %s, %s)", (data['user_id'], data['name'], hashed_password, data['email'], data['username']))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    response = jsonify({'status': 'success', 'message': 'Form submitted successfully'})
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response 
+
+@app.route('/reviewer-register', methods=['POST'])
+@jwt_required()
+def add_reviewer():
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()  
+
+    cursor.execute("SELECT * FROM reviewer WHERE username = %s", (data['username'],))
+    reviewer = cursor.fetchone()
+
+    if reviewer:
+        # Username already exists, handle accordingly (e.g., return an error response)
+        cursor.close()
+        conn.close()
+        return "Username already exists", 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    cursor.execute("INSERT INTO reviewer (user_id, password, username, name) VALUES (%s, %s, %s, %s)", (data['user_id'], hashed_password, data['username'], data['name']))
     conn.commit()
     cursor.close()
     conn.close()
@@ -183,6 +210,30 @@ def change_password():
     
     hashed_password = bcrypt.generate_password_hash(data['new_pw']).decode('utf-8')
     cursor.execute("UPDATE users SET password = %s WHERE username = %s", (hashed_password, data['username'],))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    response = jsonify({"message": "Password changed successfully!"})
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response 
+
+@app.route('/change_password_reviewer', methods=['POST']) 
+@jwt_required()
+def change_password_reviewer(): 
+    data = request.get_json()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM reviewer WHERE username = %s", (data['username'], ))
+    reviewer = cursor.fetchone()
+    if not bcrypt.check_password_hash(reviewer[2], data['old_pw']):
+        cursor.close()
+        conn.close()
+        return "Incorrect password, please try again.", 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['new_pw']).decode('utf-8')
+    cursor.execute("UPDATE reviewer SET password = %s WHERE username = %s", (hashed_password, data['username'],))
     conn.commit()
     cursor.close()
     conn.close()
@@ -252,6 +303,7 @@ def get_tv_review(tv_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+
 # Adds a review for a movie 
 @app.route('/reviews/<movie_id>', methods=['POST'])
 def add_review(movie_id): 
@@ -281,6 +333,7 @@ def add_review(movie_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
     
+
 
 # Adds a review for a movie 
 @app.route('/tvreviews/<tv_id>', methods=['POST'])

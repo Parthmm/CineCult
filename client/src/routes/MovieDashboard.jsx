@@ -35,7 +35,7 @@ function MovieDashboard() {
         <div className={styles.dashboard_background}>
             {
                 dashboardInfo.map((movie) => {
-                    return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} />
+                    return <MovieCard key={movie.movie_id} name={movie.movie_name} rating={movie.movie_rating} genre={movie.genre} language={movie.language} id={movie.movie_id} poster={movie.poster} />
                 })
             }
         </div >

@@ -11,6 +11,7 @@ import UserStatistics from "./routes/UserStatistics"
 import CinecultStatistics from "./routes/CinecultStatistics";
 import './styles/App.css'; // Import your global styles
 import PasswordChangeForm from "./components/PasswordChangeForm";
+import ReviewerRegister from "./routes/ReviewerRegister";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <><Register /></>
+  },
+  {
+    path: "/reviewer-register",
+    element: <><ReviewerRegister /></>
   },
   {
     path: "/dashboard-movies",
