@@ -158,6 +158,29 @@ function MoviePage() {
 
     }
 
+    // const addToWatchlist = (contentId, contentType) => {
+    //     fetch(`http://localhost:${config.PORT}/add_to_watchlist`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${authToken}`,
+    //         },
+    //         body: JSON.stringify({
+    //             user_id: localStorage.getItem("user_id"),
+    //             content_id: contentId,
+    //             content_type: contentType,
+    //         }),
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             console.log(data.message);
+            
+    //         })
+    //         .catch(error => {
+    //             console.error('Error adding to watchlist:', error);
+    //         });
+    // };
+
 
 
     return (
@@ -196,7 +219,7 @@ function MoviePage() {
 
 
             <Button onClick={handleOpen}>Write a review</Button>
-            <Button onClick={goToWatchlist}>Add to WatchList</Button>
+            {/* <Button onClick={addToWatchlist}>Add to WatchList</Button> */}
             <Modal
                 className={formStyles.form_background}
                 open={open}
