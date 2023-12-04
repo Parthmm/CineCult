@@ -12,7 +12,7 @@ function WatchListPage() {
     const authToken = localStorage.getItem('authToken');
     const { user_id } = useParams();
     const { state } = useLocation();
-    const { name } = state;
+    const  name  = state && state.name ? state.name : '';
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
@@ -67,6 +67,28 @@ function WatchListPage() {
                 console.error('Error adding to watchlist:', error);
             });
     };
+        // const addToWatchlist = (contentId, contentType) => {
+    //     fetch(`http://localhost:${config.PORT}/add_to_watchlist`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${authToken}`,
+    //         },
+    //         body: JSON.stringify({
+    //             user_id: localStorage.getItem("user_id"),
+    //             content_id: contentId,
+    //             content_type: contentType,
+    //         }),
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             console.log(data.message);
+            
+    //         })
+    //         .catch(error => {
+    //             console.error('Error adding to watchlist:', error);
+    //         });
+    // };
 
     const removeFromWatchlist = (watchlistItemId) => {
         fetch(`http://localhost:${config.PORT}/remove_from_watchlist`, {
